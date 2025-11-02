@@ -150,7 +150,7 @@ body > header.navbar {
 
 /* POPUP MENU & USER */
 .popup-menu {
-  position: fixed;
+  position: absolute;
   top: 70px; /* turun dikit biar gak nempel navbar */
   right: 70px;
   background-color: #fff;
