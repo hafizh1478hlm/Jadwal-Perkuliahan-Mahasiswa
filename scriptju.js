@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const keywords = [
     { words: ["edit jadwal", "ubah jadwal", "tanggal", "kalender jadwal", "tambah catatan", "catatan jadwal"], page: "kelolajadwal.html", label: "Kelola Jadwal" },
     { words: ["jadwal utama", "jadwal default", "jadwal mata kuliah", "dasar pemrograman", "dasar pemrograman web", "pengantar proyek perangkat lunak", "sistem komputer", "matematika", "pendidikan pancasila", "pengantar teknologi informasi"], page: "jadwalutama.html", label: "Jadwal Utama" },
-    { words: ["beranda", "dashboard", "home"], page: "dashboard.html", label: "Dashboard" }
+    { words: ["beranda", "dashboard", "home"], page: "dashboard.html", label: "Beranda" }
   ];
 
   let currentFocus = -1;
