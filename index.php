@@ -246,7 +246,7 @@
                 <div class="divider"></div>
 
                 <!-- Button Registrasi -->
-                <button type="button" class="btn btn-register" onclick="window.location.href='registrasi.html'">
+                <button type="button" class="btn btn-register" onclick="window.location.href='registrasi.php'">
                     Registrasi
                 </button>
 
@@ -290,7 +290,7 @@
                 console.log('Password:', kataSandi);
 
                 alert('LOGIN BERHASIL!\nSemoga Hari mu Menyenangkan😊\nTetap Semangat, Pantang Menyerah💪🏼');
-                window.location.href = "dashboard.html";
+                window.location.href = "dashboard.php";
             } else {
                 alert('Mohon lengkapi semua field!');
             }

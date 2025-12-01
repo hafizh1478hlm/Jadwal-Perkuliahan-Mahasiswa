@@ -321,7 +321,7 @@
             console.log('Password:', buatKataSandi);
 
             alert('Registrasi berhasil!\n\nSemangat Belajar nya🤗' + namaLengkap);
-            window.location.href = 'index.html';
+            window.location.href = 'index.php';
         });
 
         // === OPTIONAL: Auto-focus ke input pertama saat halaman load ===

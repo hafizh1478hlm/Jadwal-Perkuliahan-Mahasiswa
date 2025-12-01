@@ -40,16 +40,16 @@
     <!-- MENU POP-UP -->
     <div class="popup-menu" id="menuPopup">
         <ul>
-            <li><a href="dashboard.html">Beranda</a></li>
-            <li><a href="kelolajadwal.html">Kelola Jadwal</a></li>
-            <li><a href="jadwalutama.html">Jadwal Utama</a></li>
+            <li><a href="dashboard.php">Beranda</a></li>
+            <li><a href="kelolajadwal.php">Kelola Jadwal</a></li>
+            <li><a href="jadwalutama.php">Jadwal Utama</a></li>
         </ul>
     </div>
 
     <!-- USER POP-UP -->
     <div class="popup-user" id="userPopup">
         <ul>
-            <li><a href="index.html">Keluar</a></li>
+            <li><a href="index.php">Keluar</a></li>
         </ul>
     </div>
 
