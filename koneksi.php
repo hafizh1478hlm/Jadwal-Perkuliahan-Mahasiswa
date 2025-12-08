@@ -1,15 +1,13 @@
 <?php
-// koneksi.php
 $host = "localhost";
 $user = "root";
 $pass = "";
-$dbname = "db_jadwal"; // nama database
+$dbname = "db_jadwal";
 
-$conn = new mysqli("localhost", "root", "", "db_jadwal");
+$conn = new mysqli($host, $user, $pass, $dbname);
 
-if (!$conn) {
-    http_response_code(500);
-    echo json_encode(["error" => "Koneksi DB gagal: " . mysqli_connect_error()]);
-    exit;
+// cek koneksi
+if ($conn->connect_error) {
+    die("Koneksi gagal: " . $conn->connect_error);
 }
 ?>
