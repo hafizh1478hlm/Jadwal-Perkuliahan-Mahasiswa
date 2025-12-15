@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <?php 
 
 include 'koneksi.php'; 
@@ -16,8 +15,6 @@ if (!empty($keyword)) {
 }
 
 ?>
-=======
->>>>>>> 15b0b6aeabbd3816193cb409d863308502c9b8f7
 <!DOCTYPE html>
 <html lang="en">
 
@@ -44,7 +41,6 @@ if (!empty($keyword)) {
 
         <!-- SEARCH BAR -->
         <div class="nav-right">
-<<<<<<< HEAD
             
             <form method="GET" action="jadwalutama.php" class="d-flex align-items-center"> 
                 <div class="search-container me-3 position-relative">
@@ -60,17 +56,6 @@ if (!empty($keyword)) {
                 </div>
                 <button type="submit" style="display:none;"></button>
             </form>
-=======
-            <div class="search-container me-3 position-relative">
-                <input type="text" id="searchInput" placeholder="Search..." class="form-control form-control-sm"
-                    style="width: 180px; border-radius: 20px; padding-left: 12px;" />
-                <ul id="suggestions" class="list-group position-absolute w-100"
-                    style="top: 35px; display:none; z-index:1000;">
-                </ul>
-            </div>
-
-
->>>>>>> 15b0b6aeabbd3816193cb409d863308502c9b8f7
             <i class="fa-solid fa-bars menu-icon ms-2"></i>
             <i class="fa-regular fa-circle-user user-icon ms-3"></i>
         </div>
@@ -108,7 +93,6 @@ if (!empty($keyword)) {
                 </tr>
             </thead>
             <tbody>
-<<<<<<< HEAD
                 <?php
                     $query = "SELECT 
                                 jk.hari, 
@@ -171,93 +155,6 @@ if (!empty($keyword)) {
                     echo ".</td></tr>";
                 }
                 ?>
-=======
-                <!-- SENIN -->
-                <tr>
-                    <td rowspan="4">SENIN</td>
-                    <td>07:50 - 10:20</td>
-                    <td>GU 604</td>
-                    <td>Pengantar Proyek Perangkat Lunak</td>
-                    <td>Muhammad Idris S., Tr</td>
-                </tr>
-                <tr>
-                    <td>10:20 - 12:50</td>
-                    <td>GU 604</td>
-                    <td>Pengantar Proyek Perangkat Lunak</td>
-                    <td>Ummul Fitria Afifah S. Kom., M.MSI.</td>
-                </tr>
-                <tr>
-                    <td>13:00 - 15:30</td>
-                    <td>Online</td>
-                    <td>Sistem Komputer</td>
-                    <td>Dwi Ely Kurniawan, S.Kom., M.Kom</td>
-                </tr>
-                <tr>
-                    <td>15:30 - 17:00</td>
-                    <td>Online</td>
-                    <td>Dasar Pemograman Web</td>
-                    <td>Swono Sibagariang, S.Kom., M.Kom</td>
-                </tr>
-
-                <!-- SELASA (2 sesi saja) -->
-                <tr>
-                    <td rowspan="2">SELASA</td>
-                    <td>11:10 - 12:50</td>
-                    <td>Online</td>
-                    <td>Dasar Pemrograman</td>
-                    <td>Nur Zahrati Janah, S.Kom., M.Sc</td>
-                </tr>
-                <tr>
-                    <td>13:40 - 17:00</td>
-                    <td>GU 706</td>
-                    <td>Dasar Pemrograman</td>
-                    <td>Nur Zahrati Janah, S.Kom., M.Sc </td>
-                </tr>
-
-                <!-- RABU (3 sesi saja) -->
-                <tr>
-                    <td rowspan="3">RABU</td>
-                    <td>09:30 - 11:10</td>
-                    <td>Online</td>
-                    <td>Pendidikan Pancasila</td>
-                    <td>Recy Harviani Zurwanty, S.Pd., M.Pd</td>
-                </tr>
-                <tr>
-                    <td>12:50 - 14:30</td>
-                    <td>Online</td>
-                    <td>Pengantar Teknologi Informasi</td>
-                    <td>Evaliata Br. Sembiring, S.Kom., M.Cs</td>
-                </tr>
-                <tr>
-                    <td>14:30 - 16:10</td>
-                    <td>Online</td>
-                    <td>Matematika</td>
-                    <td>Siskha Handayani, S.Si., M.Si</td>
-                </tr>
-                <!-- KAMIS -->
-                <tr>
-                    <td>KAMIS</td>
-                    <td>13:40 - 17:00</td>
-                    <td>TA 10.4</td>
-                    <td>Sistem Komputer</td>
-                    <td>Muhamad Sahrul Nizan, A.Md.Kom</td>
-                </tr>
-
-                <!-- JUMAT -->
-                <tr>
-                    <td rowspan="2">JUMAT</td>
-                    <td>08:40 - 12:00</td>
-                    <td>GU 706</td>
-                    <td>Pengantar Teknologi Informasi</td>
-                    <td>Kevin Riady, A.Md</td>
-                </tr>
-                <tr>
-                    <td>13:40 - 17:00</td>
-                    <td>GU 706</td>
-                    <td>Dasar Pemrograman Web</td>
-                    <td>Muhammad Sahrul Nizan, S.Kom., M.Kom</td>
-                </tr>
->>>>>>> 15b0b6aeabbd3816193cb409d863308502c9b8f7
             </tbody>
         </table>
     </div>
