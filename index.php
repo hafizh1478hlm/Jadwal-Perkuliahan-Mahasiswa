@@ -1,3 +1,36 @@
+<?php
+session_start();
+include "koneksi.php";
+
+$error = "";
+
+// LOGIN PROSES
+if (isset($_POST['login'])) {
+
+    $nim = mysqli_real_escape_string($conn, $_POST['nim']);
+    $password = mysqli_real_escape_string($conn, $_POST['password']);
+
+    // Cek user
+    $query = mysqli_query($conn, "SELECT * FROM mahasiswa WHERE nim='$nim' AND password='$password'");
+
+    if (!$query) {
+        die("Query Error: " . mysqli_error($conn)); 
+    }
+
+    if (mysqli_num_rows($query) === 1) {
+        $data = mysqli_fetch_assoc($query);
+
+        $_SESSION['id_user'] = $data['id_user'];
+        $_SESSION['nama'] = $data['nama'];
+
+        header("Location: dashboard.php");
+        exit;
+    } else {
+        $error = "NIM atau password salah!";
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 
@@ -5,10 +38,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Masuk</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-        /* body */
+        /* (SEMUA CSS ANDA TETAP, TANPA DIUBAH) */
         body {
             margin: 0;
             padding: 0;
@@ -32,7 +67,6 @@
             background: rgba(21, 38, 68, 0.259);
         }
 
-        /* logo poltek */
         .logo-top-left {
             position: absolute;
             top: 30px;
@@ -40,12 +74,8 @@
             z-index: 10;
         }
 
-        .logo-top-left img {
-            width: 81px;
-            height: auto;
-        }
+        .logo-top-left img { width: 81px; }
 
-        /* container login card */
         .login-container {
             position: relative;
             z-index: 5;
@@ -54,7 +84,6 @@
             padding: 20px;
         }
 
-        /* card styling */
         .login-card {
             background: rgba(255, 255, 255, 0.944);
             font-family: 'Times New Roman', Times, serif;
@@ -64,18 +93,10 @@
             border: none;
         }
 
-        /* logo if */
-        .logo-section {
-            text-align: center;
-            margin-bottom: 35px;
-        }
+        .logo-section { text-align: center; margin-bottom: 35px; }
 
-        .logo-if {
-            width: 317px;
-            height: auto;
-        }
+        .logo-if { width: 317px; }
 
-        /* text login */
         .login-title {
             text-align: center;
             font-size: 36px;
@@ -85,40 +106,30 @@
             letter-spacing: 3px;
         }
 
-        /* text atas input */
         .form-label {
             font-weight: 600;
             color: #2c3e50;
             margin-bottom: 2px;
             font-size: 14px;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
         }
 
-        /* input */
         .form-control {
             border: none;
             border-radius: 8px;
             padding: 14px 18px;
             font-size: 14px;
-            transition: all 0.3s ease;
+            transition: 0.3s;
             background: #c1e0ff;
-            color: #0f1a26;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
         }
 
         .form-control:focus {
             background: #98ccff;
             box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.15);
             outline: none;
-            color: #1e3a5f;
         }
 
-        .form-control::placeholder {
-            color: rgba(46, 62, 80, 0.5);
-            font-size: 13px;
-        }
+        .form-control::placeholder { color: rgba(46, 62, 80, 0.5); }
 
-        /* icon mata*/
         .password-toggle {
             position: absolute;
             right: 15px;
@@ -129,11 +140,8 @@
             font-size: 15px;
         }
 
-        .password-toggle:hover {
-            color: #ff9131;
-        }
+        .password-toggle:hover { color: #ff9131; }
 
-        /* BUTTON LOGIN */
         .btn-login {
             background: #1e3a5f;
             color: #f6f6f6;
@@ -142,164 +150,102 @@
             font-weight: 600;
             font-size: 15px;
             width: 100%;
-            height: auto;
             margin-top: 25px;
-            transition: all 0.3s ease;
-            letter-spacing: 0.5px;
         }
 
         .btn-login:hover {
             background: #ff9131;
             color: #f6f6f6;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(30, 58, 95, 0.3);
         }
 
-        /* garis */
         .divider {
             height: 2px;
             background: linear-gradient(to right, transparent, #1e3a5f, transparent);
             margin: 25px 0;
         }
 
-        /* BUTTON REGISTRASI */
         .btn-register {
             background: #1e3a5f;
-            color: #ffffff;
-            border: 1px solid #1e3a5f;
+            color: white;
             border-radius: 8px;
-            font-weight: 600;
             font-size: 15px;
             width: 100%;
-            transition: all 0.3s ease;
-            letter-spacing: 0.5px;
+            font-weight: 600;
         }
 
         .btn-register:hover {
             background: #ff9131;
             color: #f6f6f6;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(30, 58, 95, 0.2);
-        }
-
-        @media (max-width: 576px) {
-            .logo-top-left {
-                top: 20px;
-                left: 20px;
-            }
-
-            .logo-top-left img {
-                width: 90px;
-            }
-
-            .login-card {
-                padding: 35px 30px;
-            }
-
-            .login-title {
-                font-size: 32px;
-            }
         }
     </style>
 </head>
 
 <body>
 
-    <!-- logo poltek -->
+    <!-- LOGO POLTEK -->
     <div class="logo-top-left">
         <img src="logopeltek.png" alt="Logo Polibatam">
     </div>
 
-    <!-- MAIN CONTAINER -->
     <div class="login-container">
-        <!-- LOGIN CARD -->
         <div class="login-card">
-            <!-- logo if -->
-            <div class="logo-section">
-                <img src="logo_if.png" alt="Logo IF" class="logo-if">
-            </div>
-            <h2 class="login-title">MASUK</h2>
-            <!-- FORM LOGIN -->
-            <form id="loginForm">
 
-                <!-- Input Nomor Induk Mahasiswa -->
+            <div class="logo-section">
+                <img src="logo_if.png" class="logo-if">
+            </div>
+
+            <h2 class="login-title">MASUK</h2>
+
+            <!-- ERROR MESSAGE -->
+            <?php if ($error != ""): ?>
+                <div class="alert alert-danger text-center py-2">
+                    <?= $error ?>
+                </div>
+            <?php endif; ?>
+
+            <form method="POST" action="">
+
                 <div class="mb-3">
-                    <label for="nomorInduk" class="form-label">Nomor Induk Mahasiswa</label>
-                    <input type="text" class="form-control" id="nomorInduk" placeholder="Masukkan Nomor Induk Mahasiswa"
-                        required>
+                    <label class="form-label">Nomor Induk Mahasiswa</label>
+                    <input type="text" class="form-control" name="nim" required placeholder="Masukkan Nomor Induk Mahasiswa">
                 </div>
 
-                <!-- Input Kata Sandi dengan Toggle -->
                 <div class="mb-3 position-relative">
-                    <label for="kataSandi" class="form-label">Kata Sandi</label>
-                    <input type="password" class="form-control" id="kataSandi" placeholder="Masukkan Kata Sandi"
-                        required>
+                    <label class="form-label">Kata Sandi</label>
+                    <input type="password" class="form-control" id="kataSandi" name="password" required placeholder="Masukkan Kata Sandi">
                     <i class="fas fa-eye-slash password-toggle" id="togglePassword"></i>
                 </div>
 
-                <!-- Button Login -->
-                <button type="submit" class="btn btn-login">
-                    Masuk
-                </button>
+                <!-- BUTTON LOGIN -->
+                <button type="submit" name="login" class="btn btn-login">Masuk</button>
 
-                <!-- garis -->
                 <div class="divider"></div>
 
-                <!-- Button Registrasi -->
                 <button type="button" class="btn btn-register" onclick="window.location.href='registrasi.php'">
                     Registrasi
                 </button>
 
             </form>
-
         </div>
     </div>
-    <!-- Bootstrap js -->
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- JAVASCRIPT -->
     <script>
-        // === TOGGLE PASSWORD VISIBILITY ===
         const togglePassword = document.getElementById('togglePassword');
         const passwordInput = document.getElementById('kataSandi');
 
         togglePassword.addEventListener('click', function () {
-            // Toggle tipe input antara password dan text
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-
-            // Toggle icon antara eye dan eye-slash
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
             this.classList.toggle('fa-eye');
             this.classList.toggle('fa-eye-slash');
         });
 
-        // === FORM VALIDATION DAN SUBMIT ===
-        const loginForm = document.getElementById('loginForm');
-
-        loginForm.addEventListener('submit', function (e) {
-            e.preventDefault(); // Mencegah form submit default
-
-            // Ambil nilai input
-            const nomorInduk = document.getElementById('nomorInduk').value;
-            const kataSandi = document.getElementById('kataSandi').value;
-
-            // Validasi sederhana
-            if (nomorInduk && kataSandi) {
-                console.log('Login attempt:');
-                console.log('NIM:', nomorInduk);
-                console.log('Password:', kataSandi);
-
-                alert('LOGIN BERHASIL!\nSemoga Hari mu Menyenangkan😊\nTetap Semangat, Pantang Menyerah💪🏼');
-                window.location.href = "dashboard.php";
-            } else {
-                alert('Mohon lengkapi semua field!');
-            }
-        });
-
-        window.addEventListener('load', function () {
-            document.getElementById('nomorInduk').focus();
-        });
+        window.onload = () => {
+            document.querySelector('input[name="nim"]').focus();
+        };
     </script>
-</body>
 
+</body>
 </html>

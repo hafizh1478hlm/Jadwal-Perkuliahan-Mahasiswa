@@ -31,8 +31,8 @@ const suggestions = document.getElementById("suggestions");
 
 const keywords = [
   { words: ["edit jadwal", "ubah jadwal", "tanggal", "kalender jadwal", "tambah catatan", "catatan jadwal"], page: "kelolajadwal.html", label: "Kelola Jadwal" },
-  { words: ["jadwal utama", "jadwal default", "jadwal mata kuliah", "dasar pemrograman", "dasar pemrograman web", "pengantar proyek perangkat lunak", "sistem komputer", "matematika", "pendidikan pancasila", "pengantar teknologi informasi"], page: "jadwalutama.html", label: "Jadwal Utama" },
-  { words: ["beranda", "dashboard", "home"], page: "dashboard.html", label: "Beranda" }
+  { words: ["jadwal utama", "jadwal default", "jadwal mata kuliah"], page: "jadwalutama.html", label: "Jadwal Utama" },
+  { words: ["beranda", "dashboard", "home"], page: "dashboard.html", label: "Dashboard" }
 ];
 
 let currentFocus = -1;
@@ -138,91 +138,158 @@ function removeActive(items) {
 }
 
 // =================================================================
-// === Calendar & Local Storage Logic ===
+// === Calendar & FULL DB Logic ===
 // =================================================================
 document.addEventListener('DOMContentLoaded', () => {
+  const API_BASE = './api';
   const calendarGrid = document.querySelector('.calendar-grid');
   const currentMonthYear = document.getElementById('currentMonthYear');
   const prevMonth = document.getElementById('prevMonth');
   const nextMonth = document.getElementById('nextMonth');
+
   const jadwalInputPopup = document.getElementById('jadwalInputPopup');
   const kirimBtn = document.getElementById('kirimJadwal');
   const batalBtn = document.getElementById('batalJadwal');
+
   const mainNotesTable = document.getElementById('mainNotesTable');
   const saveMainNotesBtn = document.getElementById('saveMainNotes');
 
+  const selMatkul = document.getElementById('mataKuliahSelect');
+  const selDosen = document.getElementById('dosenSelect');
+  const selRuangan = document.getElementById('ruanganSelect');
+  const selWaktu = document.getElementById('waktuSelect');
+  const catatanInput = document.getElementById('catatanInput');
+
   let currentDate = new Date();
   let activeDay = null;
+  let activeDateISO = null; // YYYY-MM-DD
 
-  // 1. FUNGSI SIMPAN KE LOCAL STORAGE
-  function saveSchedules() {
-    const rows = Array.from(mainNotesTable.querySelectorAll('.notes-row:not(.header-row)'));
-    const schedules = rows.map(row => {
-      // Ambil data dari setiap kolom
-      const dataId = row.getAttribute('data-id');
-      return {
-        id: dataId,
-        tanggal: row.querySelector('.notes-col:nth-child(1)').textContent,
-        waktu: row.querySelector('.notes-col:nth-child(2)').textContent,
-        ruangan: row.querySelector('.notes-col:nth-child(3)').textContent,
-        matkul: row.querySelector('.notes-col:nth-child(4)').textContent,
-        dosen: row.querySelector('.notes-col:nth-child(5)').textContent,
-        // Ambil teks dari elemen catatan yang bisa diedit (contenteditable)
-        catatan: row.querySelector('.notes-col.catatan').textContent,
-      };
-    });
-    // Menyimpan array objek ke localStorage setelah diubah menjadi string JSON
-    localStorage.setItem('studentSchedules', JSON.stringify(schedules));
-    console.log('Jadwal disimpan ke Local Storage.');
+  // ---------- helpers ----------
+  async function apiJSON(url, options) {
+    const res = await fetch(url, options);
+
+    // ambil text dulu supaya kalau PHP error (HTML) ketahuan
+    const text = await res.text();
+
+    let data = null;
+    try {
+      data = text ? JSON.parse(text) : null;
+    } catch (e) {
+      throw new Error(`Response bukan JSON dari ${url}. Isi awal: ${text.slice(0, 120)}...`);
+    }
+
+    if (!res.ok) {
+      const msg = (data && data.message) ? data.message : `HTTP ${res.status}`;
+      throw new Error(msg);
+    }
+
+    return data;
   }
 
-  // 2. FUNGSI RENDER SATU BARIS JADWAL
-  function renderScheduleRow(schedule) {
+  const fmtTanggalID = (iso) =>
+    new Intl.DateTimeFormat('id-ID', { day: '2-digit', month: 'long', year: 'numeric' })
+      .format(new Date(iso));
+
+  const fmtWaktu = (mulai, selesai) => `${mulai.replace(':', '.')}-${selesai.replace(':', '.')}`;
+
+  function clearHistoryRows() {
+    mainNotesTable.querySelectorAll('.notes-row.editable-row').forEach(r => r.remove());
+  }
+
+  // ---------- render 1 row history ----------
+  function renderScheduleRow(row) {
     const newRow = document.createElement('div');
     newRow.classList.add('notes-row', 'editable-row');
-    // Tambahkan data-id agar baris dapat diidentifikasi saat dihapus/disimpan
-    newRow.setAttribute('data-id', schedule.id);
+    newRow.setAttribute('data-id', row.id);
+
     newRow.innerHTML = `
-      <div class="notes-col">${schedule.tanggal}</div>
-      <div class="notes-col">${schedule.waktu}</div>
-      <div class="notes-col">${schedule.ruangan}</div>
-      <div class="notes-col">${schedule.matkul}</div>
-      <div class="notes-col">${schedule.dosen}</div>
-      <div class="notes-col catatan" contenteditable="true">${schedule.catatan}</div>
+      <div class="notes-col">${fmtTanggalID(row.tanggal)}</div>
+      <div class="notes-col">${fmtWaktu(row.mulai, row.selesai)}</div>
+      <div class="notes-col">${row.ruangan}</div>
+      <div class="notes-col">${row.matkul}</div>
+      <div class="notes-col">${row.dosen}</div>
+      <div class="notes-col catatan" contenteditable="true">${row.catatan ?? ''}</div>
       <div class="notes-col delete-btn" style="text-align:center; cursor:pointer;">🗑️</div>
     `;
 
-    // Event listener untuk hapus
-    newRow.querySelector('.delete-btn').addEventListener('click', () => {
-      newRow.remove();
-      saveSchedules(); // Simpan perubahan setelah penghapusan
+    // hapus DB
+    newRow.querySelector('.delete-btn').addEventListener('click', async () => {
+      const id = newRow.getAttribute('data-id');
+      if (!confirm('Hapus jadwal ini?')) return;
+
+      try {
+        await apiJSON(`${API_BASE}/jadwal_delete.php?id=${encodeURIComponent(id)}`);
+        newRow.remove();
+        await highlightScheduledDates();
+      } catch (e) {
+        alert('Gagal hapus: ' + e.message);
+      }
     });
 
-    // Event listener untuk menyimpan catatan saat selesai diedit (blur)
-    newRow.querySelector('.notes-col.catatan').addEventListener('blur', () => {
-      saveSchedules();
+    // update catatan DB saat blur
+    newRow.querySelector('.notes-col.catatan').addEventListener('blur', async (e) => {
+      const id = newRow.getAttribute('data-id');
+      const catatan = e.target.textContent;
+
+      try {
+        await apiJSON(`${API_BASE}/jadwal_update_catatan.php`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id, catatan })
+        });
+      } catch (err) {
+        alert('Gagal simpan catatan: ' + err.message);
+      }
     });
 
     mainNotesTable.appendChild(newRow);
   }
 
-  // 3. FUNGSI MUAT DARI LOCAL STORAGE
-  function loadSchedules() {
-    const storedSchedules = localStorage.getItem('studentSchedules');
-    if (storedSchedules) {
-      // Mengubah string JSON menjadi array objek
-      const schedules = JSON.parse(storedSchedules);
-      schedules.forEach(renderScheduleRow);
+  // ---------- load history ----------
+  async function loadHistoryFromDB() {
+    clearHistoryRows();
+    const rows = await apiJSON(`${API_BASE}/jadwal_list.php`);
+
+    // ini kunci biar ga error forEach
+    if (!Array.isArray(rows)) {
+      console.error('jadwal_list.php mengembalikan:', rows);
+      throw new Error('Data histori bukan array (cek jadwal_list.php / db.php).');
     }
+
+    rows.forEach(renderScheduleRow);
   }
 
-  // Panggil saat DOMContentLoaded untuk memuat data saat halaman dibuka
-  loadSchedules();
+  // ---------- dropdowns ----------
+  async function loadDropdownsFromDB() {
+    const fill = async (selectEl, url, placeholder) => {
+      const data = await apiJSON(url);
 
-  // =================================================================
-  // === Kalender & Logic Lainnya ===
-  // =================================================================
+      if (!Array.isArray(data)) {
+        console.error('Dropdown API return:', url, data);
+        throw new Error(`Data dropdown bukan array (${url})`);
+      }
 
+      selectEl.innerHTML =
+        `<option value="" disabled selected>${placeholder}</option>` +
+        data.map(x => `<option value="${x.id}">${x.nama}</option>`).join('');
+    };
+
+    await fill(selMatkul, `${API_BASE}/mata_kuliah_list.php`, 'Pilih Mata Kuliah');
+    await fill(selDosen, `${API_BASE}/dosen_list.php`, 'Pilih Dosen');
+    await fill(selRuangan, `${API_BASE}/ruangan_list.php`, 'Pilih Ruangan');
+
+    const waktu = await apiJSON(`${API_BASE}/waktu_slot_list.php`);
+    if (!Array.isArray(waktu)) {
+      console.error('waktu_slot_list.php return:', waktu);
+      throw new Error('Data waktu bukan array (cek waktu_slot_list.php).');
+    }
+
+    selWaktu.innerHTML =
+      `<option value="" disabled selected>Pilih Waktu</option>` +
+      waktu.map(w => `<option value="${w.id}">${fmtWaktu(w.mulai, w.selesai)}</option>`).join('');
+  }
+
+  // ---------- calendar ----------
   function renderCalendar(date) {
     calendarGrid.innerHTML = `
       <div class="day-name">SUN</div>
@@ -235,7 +302,7 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
 
     const year = date.getFullYear();
-    const month = date.getMonth();
+    const month = date.getMonth(); // 0-11
     const firstDay = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
 
@@ -251,115 +318,131 @@ document.addEventListener('DOMContentLoaded', () => {
       const d = document.createElement('div');
       d.classList.add('calendar-day');
       d.textContent = day;
-      d.addEventListener('click', () => {
+
+      d.addEventListener('click', async () => {
         if (activeDay) activeDay.classList.remove('active');
         d.classList.add('active');
         activeDay = d;
-        jadwalInputPopup.style.display = 'flex';
+
+        // set ISO date
+        const mm = String(month + 1).padStart(2, '0');
+        const dd = String(day).padStart(2, '0');
+        activeDateISO = `${year}-${mm}-${dd}`;
+
+        try {
+          await loadDropdownsFromDB();
+          jadwalInputPopup.style.display = 'flex';
+        } catch (e) {
+          alert('Gagal load dropdown: ' + e.message);
+        }
       });
+
       calendarGrid.appendChild(d);
     }
   }
 
-  // === Render awal kalender ===
-  renderCalendar(currentDate);
+  // highlight dates with schedules (DB)
+  async function highlightScheduledDates() {
+    // bersihin highlight lama
+    document.querySelectorAll('.calendar-day.has-schedule').forEach(el => el.classList.remove('has-schedule'));
 
-  // === FUNGSI KASIH TANDA TANGGAL YANG ADA JADWAL ===
-  function highlightScheduledDates() {
-    const storedSchedules = JSON.parse(localStorage.getItem('studentSchedules')) || [];
-    const dateNumbers = storedSchedules.map(schedule => {
-      const tanggalSplit = schedule.tanggal.split(' ');
-      return parseInt(tanggalSplit[0]); // ambil angka tanggal aja
-    });
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth() + 1;
 
-    document.querySelectorAll('.calendar-day').forEach(day => {
-      const dayNum = parseInt(day.textContent);
-      if (dateNumbers.includes(dayNum)) {
-        day.classList.add('has-schedule');
-      }
+    const days = await apiJSON(`${API_BASE}/jadwal_days_in_month.php?year=${year}&month=${month}`);
+    if (!Array.isArray(days)) {
+      console.error('jadwal_days_in_month.php return:', days);
+      throw new Error('Data highlight bukan array (cek jadwal_days_in_month.php).');
+    }
+
+    const setDays = new Set(days);
+
+    document.querySelectorAll('.calendar-day').forEach(dayEl => {
+      if (dayEl.classList.contains('empty')) return;
+      const dayNum = parseInt(dayEl.textContent, 10);
+      if (setDays.has(dayNum)) dayEl.classList.add('has-schedule');
     });
   }
 
-  // === Jalankan pas pertama kali halaman dimuat ===
-  highlightScheduledDates();
+  // ---------- init ----------
+  renderCalendar(currentDate);
+  loadHistoryFromDB().catch(e => alert('Gagal load histori: ' + e.message));
+  highlightScheduledDates().catch(() => {});
 
-  // === Tombol bulan sebelumnya ===
-  prevMonth.addEventListener('click', () => {
+  // prev / next month
+  prevMonth.addEventListener('click', async () => {
     currentDate.setMonth(currentDate.getMonth() - 1);
     renderCalendar(currentDate);
-    highlightScheduledDates(); // biar tetep ada highlight setelah ganti bulan
+    await highlightScheduledDates();
   });
 
-  // === Tombol bulan berikutnya ===
-  nextMonth.addEventListener('click', () => {
+  nextMonth.addEventListener('click', async () => {
     currentDate.setMonth(currentDate.getMonth() + 1);
     renderCalendar(currentDate);
-    highlightScheduledDates();
+    await highlightScheduledDates();
   });
 
-  // === Popup batal ===
+  // batal
   batalBtn.addEventListener('click', () => {
     jadwalInputPopup.style.display = 'none';
   });
 
-  // === LOGIKA KIRIM JADWAL ===
-  kirimBtn.addEventListener('click', () => {
-    const matkul = document.getElementById('mataKuliahSelect').value;
-    const dosen = document.getElementById('dosenSelect').value;
-    const ruangan = document.getElementById('ruanganSelect').value;
-    const waktu = document.getElementById('waktuSelect').value;
-    const catatan = document.getElementById('catatanInput').value || '-';
-
-    if (!matkul || !dosen || !ruangan || !waktu) {
-      alert('Lengkapi semua field (Mata Kuliah, Dosen, Ruangan, Waktu) sebelum mengirim.');
-      return;
-    }
-
-    const tanggalText = activeDay ? `${activeDay.textContent} ${currentDate.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })}` : 'Tanggal Tidak Dipilih';
-
-    const newSchedule = {
-      id: Date.now().toString(),
-      tanggal: tanggalText,
-      waktu: waktu,
-      ruangan: ruangan,
-      matkul: matkul,
-      dosen: dosen,
-      catatan: catatan,
-    };
-
-    renderScheduleRow(newSchedule);
-    saveSchedules();
-
-    // kasih tanda ke tanggal yang dipilih
-    if (activeDay) {
-      activeDay.classList.add('has-schedule');
-    }
-
-    // reset input dan tutup popup
-    document.getElementById('mataKuliahSelect').value = '';
-    document.getElementById('dosenSelect').value = '';
-    document.getElementById('ruanganSelect').value = '';
-    document.getElementById('waktuSelect').value = '';
-    document.getElementById('catatanInput').value = '';
-    if (activeDay) activeDay.classList.remove('active');
-    activeDay = null;
-
-    jadwalInputPopup.style.display = 'none';
-    alert('Jadwal berhasil ditambahkan dan disimpan!');
-
-    // update tanda jadwal
-    highlightScheduledDates();
-  });
-
-  // === Close popup kalau klik di luar ===
+  // close popup klik luar
   jadwalInputPopup.addEventListener('click', (e) => {
     if (e.target === jadwalInputPopup) jadwalInputPopup.style.display = 'none';
   });
 
-  // === Tombol simpan catatan ===
-  saveMainNotesBtn.addEventListener('click', () => {
-    saveSchedules();
-    alert('Catatan berhasil disimpan!');
+  // KIRIM -> simpan ke DB
+  kirimBtn.addEventListener('click', async () => {
+    if (!activeDateISO) {
+      alert('Pilih tanggal dulu dari kalender.');
+      return;
+    }
+
+    const payload = {
+      tanggal: activeDateISO,
+      mata_kuliah_id: selMatkul.value,
+      dosen_id: selDosen.value,
+      ruangan_id: selRuangan.value,
+      waktu_slot_id: selWaktu.value,
+      catatan: catatanInput.value || ''
+    };
+
+    if (!payload.mata_kuliah_id || !payload.dosen_id || !payload.ruangan_id || !payload.waktu_slot_id) {
+      alert('Lengkapi semua field (Mata Kuliah, Dosen, Ruangan, Waktu) sebelum mengirim.');
+      return;
+    }
+
+    try {
+      const out = await apiJSON(`${API_BASE}/jadwal_create.php`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      renderScheduleRow(out.data);
+      await highlightScheduledDates();
+
+      // reset input
+      selMatkul.selectedIndex = 0;
+      selDosen.selectedIndex = 0;
+      selRuangan.selectedIndex = 0;
+      selWaktu.selectedIndex = 0;
+      catatanInput.value = '';
+
+      if (activeDay) activeDay.classList.remove('active');
+      activeDay = null;
+      activeDateISO = null;
+
+      jadwalInputPopup.style.display = 'none';
+      alert('Jadwal berhasil disimpan ke database!');
+    } catch (e) {
+      alert('Gagal simpan: ' + e.message);
+    }
   });
 
+  // tombol simpan catatan (sekarang catatan autosave)
+  saveMainNotesBtn.addEventListener('click', () => {
+    alert('Catatan tersimpan otomatis saat kamu selesai edit (klik di luar kolom catatan).');
+  });
 });
