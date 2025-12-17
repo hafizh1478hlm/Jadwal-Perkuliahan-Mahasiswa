@@ -9,7 +9,12 @@ if (isset($_POST['login'])) {
     $nim = mysqli_real_escape_string($conn, $_POST['nim']);
     $password = $_POST['password'];
 
+<<<<<<< HEAD
     $query = mysqli_query($conn, "SELECT * FROM users WHERE nim='$nim'");
+=======
+    // Cek user
+    $query = mysqli_query($conn, "SELECT * FROM users WHERE nim='$nim' AND password='$password'");
+>>>>>>> 131aa45b715000a2d931fa8eb578941070468e4c
 
     if (!$query) {
         die("Query Error: " . mysqli_error($conn));
@@ -245,6 +250,17 @@ if (isset($_POST['login'])) {
         window.onload = () => {
             document.querySelector('input[name="nim"]').focus();
         };
+    </script>
+    <script>
+    // Menghilangkan pesan error setelah 3 detik
+    const alertBox = document.querySelector('.alert');
+    if (alertBox) {
+        setTimeout(() => {
+            alertBox.style.transition = "opacity 0.5s";
+            alertBox.style.opacity = "0";
+            setTimeout(() => alertBox.remove(), 500);
+        }, 3000); 
+    }
     </script>
 
 </body>

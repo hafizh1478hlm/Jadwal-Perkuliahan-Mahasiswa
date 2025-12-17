@@ -1,3 +1,19 @@
+<?php 
+
+include 'koneksi.php'; 
+
+$keyword = isset($_GET['search']) ? $_GET['search'] : '';
+$where_clause = "";
+
+if (!empty($keyword)) {
+    $safe_keyword = $conn->real_escape_string($keyword); 
+    $where_clause = " WHERE 
+        matkul LIKE '%$safe_keyword%' OR 
+        dosen LIKE '%$safe_keyword%' OR 
+        hari LIKE '%$safe_keyword%'";
+}
+
+?>
 <!DOCTYPE html>
 <html lang="id">
 
@@ -24,15 +40,21 @@
 
         <!-- SEARCH BAR -->
         <div class="nav-right">
-            <div class="search-container me-3 position-relative">
-                <input type="text" id="searchInput" placeholder="Search..." class="form-control form-control-sm"
-                    style="width: 180px; border-radius: 20px; padding-left: 12px;" />
-                <ul id="suggestions" class="list-group position-absolute w-100"
-                    style="top: 35px; display:none; z-index:1000;">
-                </ul>
-            </div>
-
-
+            
+            <form method="GET" action="jadwalutama.php" class="d-flex align-items-center"> 
+                <div class="search-container me-3 position-relative">
+                    <input type="text" 
+                        id="searchInput" 
+                        name="search" 
+                        placeholder="Search..." 
+                        class="form-control form-control-sm"
+                        style="width: 180px; border-radius: 20px; padding-left: 12px;" />
+                    <ul id="suggestions" class="list-group position-absolute w-100"
+                        style="top: 35px; display:none; z-index:1000;">
+                    </ul>
+                </div>
+                <button type="submit" style="display:none;"></button>
+            </form>
             <i class="fa-solid fa-bars menu-icon ms-2"></i>
             <i class="fa-regular fa-circle-user user-icon ms-3"></i>
         </div>
@@ -61,102 +83,49 @@
             Setiap perubahan yang dilakukan pada halaman "Kelola Jadwal" akan otomatis diperbarui ditabel ini.
         </p>
         <table class="jadwal-table">
-            <thead>
-                <tr>
-                    <th style="color: black;">Hari</th>
-                    <th style="color: black;">Jam</th>
-                    <th style="color: black;">Ruang</th>
-                    <th style="color: black;">Mata Kuliah</th>
-                    <th style="color: black;">Dosen</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- SENIN -->
-                <tr>
-                    <td rowspan="4">SENIN</td>
-                    <td>07:50 - 10:20</td>
-                    <td>GU 604</td>
-                    <td>Pengantar Proyek Perangkat Lunak</td>
-                    <td>Muhammad Idris S., Tr</td>
-                </tr>
-                <tr>
-                    <td>10:20 - 12:50</td>
-                    <td>GU 604</td>
-                    <td>Pengantar Proyek Perangkat Lunak</td>
-                    <td>Ummul Fitria Afifah S. Kom., M.MSI.</td>
-                </tr>
-                <tr>
-                    <td>13:00 - 15:30</td>
-                    <td>Online</td>
-                    <td>Sistem Komputer</td>
-                    <td>Dwi Ely Kurniawan, S.Kom., M.Kom</td>
-                </tr>
-                <tr>
-                    <td>15:30 - 17:00</td>
-                    <td>Online</td>
-                    <td>Dasar Pemograman Web</td>
-                    <td>Swono Sibagariang, S.Kom., M.Kom</td>
-                </tr>
+        <thead>
+    <tr style="background-color: #ffeb3b;">
+        <th style="color: black;">Hari</th>
+        <th style="color: black;">Jam</th>
+        <th style="color: black;">Mata Kuliah</th>
+        <th style="color: black;">Dosen</th>
+    </tr>
+</thead>
+<tbody>
+    <?php
+    // Query disederhanakan tanpa JOIN
+    $query = "SELECT * FROM jd_utama $where_clause 
+          ORDER BY FIELD(hari, 'SENIN', 'SELASA', 'RABU', 'KAMIS', 'JUMAT', 'SABTU', 'MINGGU'), jam_mulai";
+                            
+    $result = $conn->query($query);
+    $hari_sebelumnya = "";
+    
+    if ($result && $result->num_rows > 0) {
+        while($data = $result->fetch_assoc()) {
+            echo "<tr>";
+            
+            // LOGIKA ROWSPAN (Dihitung berdasarkan tabel jd_utama)
+            if ($data['hari'] != $hari_sebelumnya) {
+                $rowspan_query = "SELECT COUNT(*) AS total FROM jd_utama WHERE hari = '{$data['hari']}' $where_clause";
+                $rowspan_result = $conn->query($rowspan_query);
+                $rowspan_data = $rowspan_result->fetch_assoc();
+                $rowspan = $rowspan_data['total'];
+                
+                echo "<td rowspan='{$rowspan}' style='vertical-align:middle; font-weight:bold;'>{$data['hari']}</td>";
+                $hari_sebelumnya = $data['hari'];
+            }
 
-                <!-- SELASA (2 sesi saja) -->
-                <tr>
-                    <td rowspan="2">SELASA</td>
-                    <td>11:10 - 12:50</td>
-                    <td>Online</td>
-                    <td>Dasar Pemrograman</td>
-                    <td>Nur Zahrati Janah, S.Kom., M.Sc</td>
-                </tr>
-                <tr>
-                    <td>13:40 - 17:00</td>
-                    <td>GU 706</td>
-                    <td>Dasar Pemrograman</td>
-                    <td>Nur Zahrati Janah, S.Kom., M.Sc </td>
-                </tr>
-
-                <!-- RABU (3 sesi saja) -->
-                <tr>
-                    <td rowspan="3">RABU</td>
-                    <td>09:30 - 11:10</td>
-                    <td>Online</td>
-                    <td>Pendidikan Pancasila</td>
-                    <td>Recy Harviani Zurwanty, S.Pd., M.Pd</td>
-                </tr>
-                <tr>
-                    <td>12:50 - 14:30</td>
-                    <td>Online</td>
-                    <td>Pengantar Teknologi Informasi</td>
-                    <td>Evaliata Br. Sembiring, S.Kom., M.Cs</td>
-                </tr>
-                <tr>
-                    <td>14:30 - 16:10</td>
-                    <td>Online</td>
-                    <td>Matematika</td>
-                    <td>Siskha Handayani, S.Si., M.Si</td>
-                </tr>
-                <!-- KAMIS -->
-                <tr>
-                    <td>KAMIS</td>
-                    <td>13:40 - 17:00</td>
-                    <td>TA 10.4</td>
-                    <td>Sistem Komputer</td>
-                    <td>Muhamad Sahrul Nizan, A.Md.Kom</td>
-                </tr>
-
-                <!-- JUMAT -->
-                <tr>
-                    <td rowspan="2">JUMAT</td>
-                    <td>08:40 - 12:00</td>
-                    <td>GU 706</td>
-                    <td>Pengantar Teknologi Informasi</td>
-                    <td>Kevin Riady, A.Md</td>
-                </tr>
-                <tr>
-                    <td>13:40 - 17:00</td>
-                    <td>GU 706</td>
-                    <td>Dasar Pemrograman Web</td>
-                    <td>Muhammad Sahrul Nizan, S.Kom., M.Kom</td>
-                </tr>
-            </tbody>
+            // Menampilkan data (Nama kolom disesuaikan: jam, matkul, dosen)
+            echo "<td>{$data['jam_mulai']}</td>";
+            echo "<td>{$data['matkul']}</td>";
+            echo "<td>{$data['dosen']}</td>";
+            echo "</tr>";
+        }
+    } else {
+        echo "<tr><td colspan='4' class='text-center'>Jadwal tidak ditemukan.</td></tr>";
+    }
+    ?>
+</tbody>
         </table>
     </div>
     <!-- Footer -->

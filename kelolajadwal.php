@@ -40,7 +40,7 @@
     <!-- MENU POP-UP -->
     <div class="popup-menu" id="menuPopup">
         <ul>
-            <li><a href="dashboard.php">Beranda</a></li>
+            <li><a href="dashboard.php">Dashboard</a></li>
             <li><a href="kelolajadwal.php">Kelola Jadwal</a></li>
             <li><a href="jadwalutama.php">Jadwal Utama</a></li>
         </ul>
@@ -49,8 +49,12 @@
     <!-- USER POP-UP -->
     <div class="popup-user" id="userPopup">
         <ul>
+<<<<<<< HEAD
             <li><a href="index.php">Keluar</a></li>
             <li><a href=#>Ubah Sandi</a></li>
+=======
+            <li><a href="index.html">Logout</a></li>
+>>>>>>> 131aa45b715000a2d931fa8eb578941070468e4c
         </ul>
     </div>
 
@@ -58,7 +62,7 @@
     <div class="container">
         <h1>Kelola Jadwal</h1>
         <p>
-            Pilih tanggal pada kalender untuk menambahkan, mengubah, atau menghapus jadwal sesuai kebutuhanmu.
+            Pilih tanggal pada kalender untuk menambahkan, mengubah, atau menghapus jadwal dan catatan sesuai kebutuhanmu.
         </p>
 
         <!-- Kalender -->
@@ -103,50 +107,18 @@
             <h3>Masukkan Jadwal Kuliah</h3>
             <select id="mataKuliahSelect">
                 <option value="" disabled selected>Pilih Mata Kuliah</option>
-                <option value="DASPRO WEB">Dasar Pemrograman Web</option>
-                <option value="DASPRO">Dasar Pemrograman</option>
-                <option value="PPPL">Pengantar Proyek Perangkat Lunak</option>
-                <option value="SISKOM">Sistem Komputer</option>
-                <option value="MTK">Matematika</option>
-                <option value="PKN">Pendidikan Pancasila</option>
-                <option value="PTI">Pengantar Teknologi Informasi</option>
             </select>
 
             <select id="dosenSelect">
-                <option value="">Pilih Dosen</option>
-                <option value="NUR ZAHRATI JANAH, S.Kom., M.Kom">NUR ZAHRATI JANAH, S.Kom., M.Kom</option>
-                <option value="UMMUL FITRI AFIFAH, S.Kom., M.MSI">UMMUL FITRI AFIFAH, S.Kom., M.MSI</option>
-                <option value="EVALIATA BR.SEMBIRING, S.Kom., M.Kom">EVALIATA BR.SEMBIRING, S.Kom., M.Kom</option>
-                <option value="NIZAN">MUHAMMAD SAHRUL NIZAN, A.Md.Kom</option>
-                <option value="SWONO">SWONO SIBAGARIANG, S.Kom., M.Kom</option>
-                <option value="DWI ELY KURNIAWAN, S.PD., M.Kom">DWI ELY KURNIAWAN, S.PD., M.Kom</option>
-                <option value="SISKHA">SISKHA HANDAYANI, S.Si., M.Si</option>
-                <option value="RECY">RECY HARTIAYNI ZURWANTY, S.Pd., M.Pd</option>
-                <option value="KEVIN RIADY, A.MD.Kom">KEVIN RIADY, A.MD.Kom</option>
+                <option value="" disabled selected>Pilih Dosen</option>
             </select>
 
             <select id="ruanganSelect">
-                <option value="">Pilih Ruangan</option>
-                <option value="GU 604">GU 604</option>
-                <option value="GU 706">GU 706</option>
-                <option value="GU 706">GU 702</option>
-                <option value="TA 10.4">TA 10.4</option>
-                <option value="ONLINE">ONLINE</option>
+                <option value="" disabled selected>Pilih Ruangan</option>
             </select>
 
             <select id="waktuSelect">
-                <option value="">Pilih Waktu</option>
-                <option value="07.50-08.40">07.50-08.40</option>
-                <option value="08.40-09.30">08.40-09.30</option>
-                <option value="09.30-10.20">09.30-10.20</option>
-                <option value="10.20-11.10">10.20-11.10</option>
-                <option value="11.10-12.00">11.10-12.00</option>
-                <option value="12.00-12.50">12.00-12.50</option>
-                <option value="12.50-13.40">12.50-13.40</option>
-                <option value="13.40-14.30">13.40-14.30</option>
-                <option value="14.30-15.20">14.30-15.20</option>
-                <option value="15.20-16.10">15.20-16.10</option>
-                <option value="16.10-17.00">16.10-17.00</option>
+                <option value="" disabled selected>Pilih Waktu</option>
             </select>
 
             <input type="text" id="catatanInput" placeholder="Catatan tambahan..." />
@@ -172,5 +144,6 @@
 
     <script src="scriptkj.js"></script>
 </body>
+
 
 </html>
