@@ -86,7 +86,8 @@ if (!empty($keyword)) {
         <thead>
     <tr style="background-color: #ffeb3b;">
         <th style="color: black;">Hari</th>
-        <th style="color: black;">Jam</th>
+        <th style="color: black;">Jam Mulai</th>
+        <th style="color: black;">Jam Selesai</th>
         <th style="color: black;">Mata Kuliah</th>
         <th style="color: black;">Dosen</th>
     </tr>
@@ -117,6 +118,7 @@ if (!empty($keyword)) {
 
             // Menampilkan data (Nama kolom disesuaikan: jam, matkul, dosen)
             echo "<td>{$data['jam_mulai']}</td>";
+            echo "<td>{$data['jam_selesai']}</td>";
             echo "<td>{$data['matkul']}</td>";
             echo "<td>{$data['dosen']}</td>";
             echo "</tr>";
