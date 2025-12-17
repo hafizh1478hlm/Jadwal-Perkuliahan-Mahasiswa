@@ -20,7 +20,7 @@ if (isset($_POST['login'])) {
     if (mysqli_num_rows($query) === 1) {
         $data = mysqli_fetch_assoc($query);
 
-        if ($password === $data['password']) {
+        if (password_verify($password, $data['password'])) {
 
             $_SESSION['id_user'] = $data['id_user'];
             $_SESSION['nim']     = $data['nim'];
