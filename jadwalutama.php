@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
@@ -51,6 +51,7 @@
     <div class="popup-user" id="userPopup">
         <ul>
             <li><a href="index.php">Keluar</a></li>
+            <li><a href=#>Ubah Sandi</a></li>
         </ul>
     </div>
 

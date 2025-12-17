@@ -1,10 +1,16 @@
 <?php
-// dashboard.php
-// optional: include jika butuh data dari server saat page load
+session_start();
+
+if (!isset($_SESSION['nama'])) {
+    header("Location: index.php");
+    exit;
+}
+
 include 'koneksi.php';
 ?>
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 ...
 
 <head>
@@ -32,7 +38,7 @@ include 'koneksi.php';
     <div class="nav-right">
       <div class="search-container me-3 position-relative">
         <input type="text" id="searchInput" placeholder="Search..." class="form-control form-control-sm"
-          style="width: 180px; border-radius: 20px; padding-left: 12px;" />
+          style="width: 180px; border-radius: 20px; padding-left: 12px;" autocomplete="off"/>
         <ul id="suggestions" class="list-group position-absolute w-100" style="top: 35px; display:none; z-index:1000;">
         </ul>
       </div>
@@ -55,14 +61,15 @@ include 'koneksi.php';
   <!-- USER POP-UP -->
   <div class="popup-user" id="userPopup">
     <ul>
-      <li><a href="index.php">Keluar</a></li>
+      <li><a href="logout.php">Keluar</a></li>
+      <li><a href=#>Ubah Sandi</a></li>
     </ul>
   </div>
 
   <!-- HERO SECTION -->
   <section class="hero">
     <div class="hero-content">
-      <h2>Halo, Latifah Intan Rosary!</h2>
+      <h2>Halo, <?= htmlspecialchars($_SESSION['nama']) ?>!</h2>
       <p>Kelola jadwal kuliahmu dengan mudah dan efisien di sini.</p>
       <a href="jadwalutama.php" class="btn-hero">Lihat Jadwal</a>
     </div>

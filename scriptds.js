@@ -1,3 +1,8 @@
+    const data = await res.json();
+console.log("JS DASHBOARD AKTIF");
+console.log(data);
+
+    
     const menuIcon = document.querySelector('.menu-icon');
     const userIcon = document.querySelector('.user-icon');
     const menuPopup = document.getElementById('menuPopup');
@@ -54,16 +59,15 @@ searchInput.addEventListener("input", function () {
       }
 
       data.forEach(item => {
-        const li = document.createElement("li");
-        li.className = "list-group-item";
-        li.textContent = `${item.nama_matkul} — ${item.nama_dosen}`;
-        li.dataset.id = item.id;
-        li.addEventListener("click", () => {
-          // contoh: buka halaman detail jadwal atau jadwal utama dengan id
-          window.location.href = "jadwalutama.php?id=" + item.id;
-        });
-        suggestions.appendChild(li);
-      });
+  const li = document.createElement("li");
+  li.className = "list-group-item";
+  li.textContent = `${item.matkul} — ${item.dosen}`;
+  li.onclick = () => {
+    window.location.href = "jadwalutama.php?id=" + item.id_jadwal;
+  };
+  suggestions.appendChild(li);
+});
+
 
       suggestions.style.display = "block";
       selectableItems = Array.from(suggestions.querySelectorAll("li"));

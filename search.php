@@ -10,9 +10,9 @@ if ($keyword === '') {
 }
 
 // prepared statement untuk mencegah SQL injection
-$sql = "SELECT id, nama_matkul, nama_dosen, hari, jam_mulai, jam_selesai, ruangan
-        FROM jadwal
-        WHERE nama_matkul LIKE ? OR nama_dosen LIKE ?
+$sql = "SELECT id_jadwal, matkul, dosen, hari, jam_mulai, jam_selesai, ruangan
+        FROM jd_utama
+        WHERE matkul LIKE ? OR dosen LIKE ?
         LIMIT 50";
 
 $stmt = mysqli_prepare($conn, $sql);

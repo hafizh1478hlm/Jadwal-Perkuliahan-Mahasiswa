@@ -1,10 +1,10 @@
 <?php
 $host = "localhost";
 $user = "root";
-$pass = "";
+$password = "";
 $dbname = "db_jadwal";
 
-$conn = new mysqli($host, $user, $pass, $dbname);
+$conn = new mysqli($host, $user, $password, $dbname);
 
 // cek koneksi
 if ($conn->connect_error) {

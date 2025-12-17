@@ -4,32 +4,38 @@ include "koneksi.php";
 
 $error = "";
 
-// LOGIN PROSES
 if (isset($_POST['login'])) {
 
     $nim = mysqli_real_escape_string($conn, $_POST['nim']);
-    $password = mysqli_real_escape_string($conn, $_POST['password']);
+    $password = $_POST['password'];
 
-    // Cek user
-    $query = mysqli_query($conn, "SELECT * FROM mahasiswa WHERE nim='$nim' AND password='$password'");
+    $query = mysqli_query($conn, "SELECT * FROM users WHERE nim='$nim'");
 
     if (!$query) {
-        die("Query Error: " . mysqli_error($conn)); 
+        die("Query Error: " . mysqli_error($conn));
     }
 
     if (mysqli_num_rows($query) === 1) {
         $data = mysqli_fetch_assoc($query);
 
-        $_SESSION['id_user'] = $data['id_user'];
-        $_SESSION['nama'] = $data['nama'];
+        if (password_verify($password, $data['password'])) {
 
-        header("Location: dashboard.php");
-        exit;
+            $_SESSION['id_user'] = $data['id_user'];
+            $_SESSION['nim']     = $data['nim'];
+            $_SESSION['nama']    = $data['nama'];
+
+            header("Location: dashboard.php");
+            exit;
+        } else {
+            $error = "NIM atau password salah!";
+        }
+
     } else {
         $error = "NIM atau password salah!";
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="id">
@@ -218,12 +224,6 @@ if (isset($_POST['login'])) {
 
                 <!-- BUTTON LOGIN -->
                 <button type="submit" name="login" class="btn btn-login">Masuk</button>
-
-                <div class="divider"></div>
-
-                <button type="button" class="btn btn-register" onclick="window.location.href='registrasi.php'">
-                    Registrasi
-                </button>
 
             </form>
         </div>
