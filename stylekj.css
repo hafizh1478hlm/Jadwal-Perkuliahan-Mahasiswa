@@ -590,3 +590,17 @@ h1, p {
   text-align: center;
 }
 
+.select-with-btn{
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.select-with-btn select{
+  flex: 1;
+}
+
+.add-btn{
+  padding: 8px 12px;
+  cursor: pointer;
+}

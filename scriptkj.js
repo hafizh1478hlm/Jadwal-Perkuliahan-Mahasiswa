@@ -155,10 +155,153 @@ document.addEventListener('DOMContentLoaded', () => {
   const saveMainNotesBtn = document.getElementById('saveMainNotes');
 
   const selMatkul = document.getElementById('mataKuliahSelect');
+  const btnTambahMatkul = document.getElementById('btnTambahMatkul');
+
   const selDosen = document.getElementById('dosenSelect');
+  const btnTambahDosen = document.getElementById('btnTambahDosen');
+
   const selRuangan = document.getElementById('ruanganSelect');
+  const btnTambahRuangan = document.getElementById('btnTambahRuangan');
+
   const selWaktu = document.getElementById('waktuSelect');
+  const btnTambahWaktu = document.getElementById('btnTambahWaktu');
+
   const catatanInput = document.getElementById('catatanInput');
+
+/* ===============================
+  LOAD DATA MASTER
+================================ */
+async function loadMatkul() {
+  const res = await fetch('./api/matkul_list.php');
+  const data = await res.json();
+
+  selMatkul.innerHTML = `<option value="" disabled selected>Pilih Mata Kuliah</option>`;
+  data.forEach(m => {
+    const opt = document.createElement('option');
+    opt.value = m.id;
+    opt.textContent = m.nama;
+    selMatkul.appendChild(opt);
+  });
+}
+
+async function loadDosen() {
+  const res = await fetch('./api/dosen_list.php');
+  const data = await res.json();
+
+  selDosen.innerHTML = `<option value="" disabled selected>Pilih Dosen</option>`;
+  data.forEach(d => {
+    const opt = document.createElement('option');
+    opt.value = d.id;
+    opt.textContent = d.nama;
+    selDosen.appendChild(opt);
+  });
+}
+
+async function loadRuangan() {
+  const res = await fetch('./api/ruangan_list.php');
+  const data = await res.json();
+
+  selRuangan.innerHTML = `<option value="" disabled selected>Pilih Ruangan</option>`;
+  data.forEach(r => {
+    const opt = document.createElement('option');
+    opt.value = r.id;
+    opt.textContent = r.nama;
+    selRuangan.appendChild(opt);
+  });
+}
+
+async function loadWaktu() {
+  const res = await fetch('./api/waktu_list.php');
+  const data = await res.json();
+
+  selWaktu.innerHTML = `<option value="" disabled selected>Pilih Waktu</option>`;
+  data.forEach(w => {
+    const opt = document.createElement('option');
+    opt.value = w.id;
+    opt.textContent = `${w.mulai} - ${w.selesai}`;
+    selWaktu.appendChild(opt);
+  });
+}
+
+/* ===============================
+   TAMBAH DATA MASTER
+================================ */
+async function tambahData(endpoint, payload, reloadFn, selectEl, textBuilder) {
+  const res = await fetch(endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  const data = await res.json();
+
+  if (!data.ok) {
+    alert(data.message || 'Gagal menambahkan data');
+    return;
+  }
+
+  await reloadFn();
+  selectEl.value = data.data.id;
+}
+
+/* ===============================
+   EVENT LISTENER TOMBOL
+================================ */
+btnTambahMatkul.addEventListener('click', async () => {
+  const nama = prompt('Masukkan nama mata kuliah:');
+  if (!nama) return;
+
+  await tambahData(
+    './api/matkul_create.php',
+    { nama },
+    loadMatkul,
+    selMatkul
+  );
+});
+
+btnTambahDosen.addEventListener('click', async () => {
+  const nama = prompt('Masukkan nama dosen:');
+  if (!nama) return;
+
+  await tambahData(
+    './api/dosen_create.php',
+    { nama },
+    loadDosen,
+    selDosen
+  );
+});
+
+btnTambahRuangan.addEventListener('click', async () => {
+  const nama = prompt('Masukkan nama ruangan:');
+  if (!nama) return;
+
+  await tambahData(
+    './api/ruangan_create.php',
+    { nama },
+    loadRuangan,
+    selRuangan
+  );
+});
+
+btnTambahWaktu.addEventListener('click', async () => {
+  const mulai = prompt('Jam mulai (contoh 08:00):');
+  const selesai = prompt('Jam selesai (contoh 09:40):');
+  if (!mulai || !selesai) return;
+
+  await tambahData(
+    './api/waktu_create.php',
+    { mulai, selesai },
+    loadWaktu,
+    selWaktu
+  );
+});
+
+/* ===============================
+   LOAD SEMUA DATA SAAT HALAMAN BUKA
+================================ */
+loadMatkul();
+loadDosen();
+loadRuangan();
+loadWaktu();
 
   let currentDate = new Date();
   let activeDay = null;
