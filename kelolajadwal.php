@@ -49,12 +49,8 @@
     <!-- USER POP-UP -->
     <div class="popup-user" id="userPopup">
         <ul>
-<<<<<<< HEAD
             <li><a href="index.php">Keluar</a></li>
             <li><a href=#>Ubah Sandi</a></li>
-=======
-            <li><a href="index.html">Logout</a></li>
->>>>>>> 131aa45b715000a2d931fa8eb578941070468e4c
         </ul>
     </div>
 

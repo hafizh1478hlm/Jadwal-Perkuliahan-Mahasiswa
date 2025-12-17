@@ -9,12 +9,9 @@ if (isset($_POST['login'])) {
     $nim = mysqli_real_escape_string($conn, $_POST['nim']);
     $password = $_POST['password'];
 
-<<<<<<< HEAD
+   //cek user di database
     $query = mysqli_query($conn, "SELECT * FROM users WHERE nim='$nim'");
-=======
-    // Cek user
-    $query = mysqli_query($conn, "SELECT * FROM users WHERE nim='$nim' AND password='$password'");
->>>>>>> 131aa45b715000a2d931fa8eb578941070468e4c
+
 
     if (!$query) {
         die("Query Error: " . mysqli_error($conn));
