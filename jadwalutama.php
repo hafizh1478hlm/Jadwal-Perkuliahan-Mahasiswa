@@ -38,26 +38,18 @@ if (!empty($keyword)) {
             </div>
         </div>
 
-        <!-- SEARCH BAR -->
-        <div class="nav-right">
-            
-            <form method="GET" action="jadwalutama.php" class="d-flex align-items-center"> 
-                <div class="search-container me-3 position-relative">
-                    <input type="text" 
-                        id="searchInput" 
-                        name="search" 
-                        placeholder="Search..." 
-                        class="form-control form-control-sm"
-                        style="width: 180px; border-radius: 20px; padding-left: 12px;" />
-                    <ul id="suggestions" class="list-group position-absolute w-100"
-                        style="top: 35px; display:none; z-index:1000;">
-                    </ul>
-                </div>
-                <button type="submit" style="display:none;"></button>
-            </form>
-            <i class="fa-solid fa-bars menu-icon ms-2"></i>
-            <i class="fa-regular fa-circle-user user-icon ms-3"></i>
-        </div>
+    <!-- SEARCH BAR -->
+    <div class="nav-right">
+      <div class="search-container me-3 position-relative">
+        <input type="text" id="searchInput" placeholder="Search..." class="form-control form-control-sm"
+          style="width: 180px; border-radius: 20px; padding-left: 12px;" autocomplete="off"/>
+        <ul id="suggestions" class="list-group position-absolute w-100" style="top: 35px; display:none; z-index:1000;">
+        </ul>
+      </div>
+
+      <i class="fa-solid fa-bars menu-icon ms-2"></i>
+      <i class="fa-regular fa-circle-user user-icon ms-3"></i>
+    </div>
     </header>
 
     <!-- MENU POP-UP -->
