@@ -82,11 +82,9 @@ include 'koneksi.php';
       <p>
         Website ini dirancang untuk membantu mahasiswa Program Studi Teknik Informatika Politeknik Negeri Batam 
         dalam mengakses dan mengelola jadwal perkuliahan secara efektif. 
-        Mahasiswa dapat dengan mudah melihat jadwal kuliah mereka dalam format yang terstruktur. 
-        Selain itu, fitur pencarian yang canggih memungkinkan mahasiswa untuk mencari jadwal berdasarkan
-        mata kuliah atau dosen tertentu, sehingga memudahkan mereka dalam merencanakan aktivitas akademik. 
-        Fitur kalender interaktif juga tersedia, di mana pengguna dapat menambahkan jadwal atau catatan perkuliahan tambahan melalui kalender 
-        serta menghapus data tambahan yang telah disimpan sesuai kebutuhan.
+        Tersedia fitur kalender interaktif yang memungkinkan pengguna menambahkan jadwal atau catatan perkuliahan 
+        tambahan pada tanggal tertentu, termasuk informasi mata kuliah, dosen, ruangan, dan waktu, serta menghapus 
+        data tambahan yang telah disimpan sesuai kebutuhan.
       </p>
     </div>
   </section>
