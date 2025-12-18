@@ -49,16 +49,10 @@
     <!-- USER POP-UP -->
     <div class="popup-user" id="userPopup">
         <ul>
-<<<<<<< HEAD
-            <li><a href="index.php">Logout</a></li>
-=======
-<<<<<<< HEAD
+
             <li><a href="index.php">Keluar</a></li>
             <li><a href=#>Ubah Sandi</a></li>
-=======
-            <li><a href="index.html">Logout</a></li>
->>>>>>> 131aa45b715000a2d931fa8eb578941070468e4c
->>>>>>> c09a099de8a1f16fe066f5879753dc8abb197ab8
+
         </ul>
     </div>
 

@@ -134,7 +134,7 @@ if (!empty($keyword)) {
     <footer class="footer">
         <div class="footer-top text-white py-4">
             <div class="footer-container">
-                <p>Jadwal default jurusan Teknik Informatika semester 1 Politeknik Negeri Batam </p>
+                <p>Jadwal perkuliahan jurusan Teknik Informatika semester 1 Politeknik Negeri Batam </p>
             </div>
         </div>
         <div class="footer-bottom text-center py-2">

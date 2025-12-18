@@ -62,7 +62,7 @@ include 'koneksi.php';
   <div class="popup-user" id="userPopup">
     <ul>
       <li><a href="logout.php">Keluar</a></li>
-      <li><a href=#>Ubah Sandi</a></li>
+      <li><a href="ubah_sandi.php">Ubah Sandi</a></li>
     </ul>
   </div>
 
@@ -80,16 +80,20 @@ include 'koneksi.php';
     <div class="container text-center">
       <h2>Selamat Datang di Website Jadwal Perkuliahan Mahasiswa Teknik Informatika</h2>
       <p>
-        Website ini dirancang untuk mempermudah mahasiswa Politeknik Negeri Batam dalam
-        mengakses jadwal perkuliahan. Melalui halaman ini, mahasiswa dapat melihat jadwal kuliah,
-        secara rinci, serta mengubah atau menambah jadwal dan catatan sesuai kebutuhan mereka.
+        Website ini dirancang untuk membantu mahasiswa Program Studi Teknik Informatika Politeknik Negeri Batam 
+        dalam mengakses dan mengelola jadwal perkuliahan secara efektif. 
+        Mahasiswa dapat dengan mudah melihat jadwal kuliah mereka dalam format yang terstruktur. 
+        Selain itu, fitur pencarian yang canggih memungkinkan mahasiswa untuk mencari jadwal berdasarkan
+        mata kuliah atau dosen tertentu, sehingga memudahkan mereka dalam merencanakan aktivitas akademik. 
+        Fitur kalender interaktif juga tersedia, di mana pengguna dapat menambahkan jadwal atau catatan perkuliahan tambahan melalui kalender 
+        serta menghapus data tambahan yang telah disimpan sesuai kebutuhan.
       </p>
     </div>
   </section>
 
   <!-- CEK TIM KAMI -->
   <section class="team-section">
-    <h2>Lihat Tim Kami</h2>
+    <h2>Dikembangkan oleh:</h2>
     <div class="team-container">
       <div class="team-card">
         <img src="pas zara.jpg" alt="Anggota 1">
