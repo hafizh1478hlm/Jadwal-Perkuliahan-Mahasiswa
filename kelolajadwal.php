@@ -103,33 +103,21 @@
     <div class="popup-overlay" id="jadwalInputPopup">
         <div class="popup-content">
             <h3>Masukkan Jadwal Kuliah</h3>
-            <div class="select-with-btn">
-                <select id="mataKuliahSelect">
+            <select id="mataKuliahSelect">
                     <option value="" disabled selected>Pilih Mata Kuliah</option>
-                </select>
-                <button type="button" id="btnTambahMatkul" class="add-btn">+ Tambah</button>
-            </div>
+            </select>
 
-            <div class="select-with-btn">
-                <select id="dosenSelect">
-                    <option value="" disabled selected>Pilih Dosen</option>
-                </select>
-                <button type="button" id="btnTambahDosen" class="add-btn">+ Tambah</button>
-            </div>
+            <select id="dosenSelect">
+                <option value="" disabled selected>Pilih Dosen</option>
+            </select>
 
-            <div class="select-with-btn">
-                <select id="ruanganSelect">
-                    <option value="" disabled selected>Pilih Ruangan</option>
-                </select>
-                <button type="button" id="btnTambahRuangan" class="add-btn">+ Tambah</button>
-            </div>
+            <select id="ruanganSelect">
+                <option value="" disabled selected>Pilih Ruangan</option>
+            </select>
 
-            <div class="select-with-btn">
-                <select id="waktuSelect">
-                    <option value="" disabled selected>Pilih Waktu</option>
-                </select>
-                <button type="button" id="btnTambahWaktu" class="add-btn">+ Tambah</button>
-            </div>
+            <select id="waktuSelect">
+                <option value="" disabled selected>Pilih Waktu</option>
+            </select>
 
             <input type="text" id="catatanInput" placeholder="Catatan tambahan..." />
 
