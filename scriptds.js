@@ -123,3 +123,26 @@ document.addEventListener("click", function (e) {
     suggestions.style.display = "none";
   }
 });
+
+
+// --- POP-UP UBAH SADI ---
+
+const btnUbahSandi = document.getElementById("btnUbahSandi");
+const popupUbahSandi = document.getElementById("popupUbahSandi");
+const closePopup = document.querySelector(".close-popup");
+
+btnUbahSandi.addEventListener("click", (e) => {
+  e.preventDefault();
+  popupUbahSandi.style.display = "flex";
+  userPopup.style.display = "none";
+});
+
+closePopup.addEventListener("click", () => {
+  popupUbahSandi.style.display = "none";
+});
+
+popupUbahSandi.addEventListener("click", (e) => {
+  if (e.target === popupUbahSandi) {
+    popupUbahSandi.style.display = "none";
+  }
+});
