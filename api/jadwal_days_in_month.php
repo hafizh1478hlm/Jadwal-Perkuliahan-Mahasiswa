@@ -1,6 +1,6 @@
 <?php
 header("Content-Type: application/json");
-require __DIR__ . "/db.php";
+require_once __DIR__ . '/../koneksi.php';
 
 $year  = isset($_GET["year"]) ? (int)$_GET["year"] : (int)date("Y");
 $month = isset($_GET["month"]) ? (int)$_GET["month"] : (int)date("m");

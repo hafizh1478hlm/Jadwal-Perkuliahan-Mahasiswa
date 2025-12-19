@@ -1,6 +1,6 @@
 <?php
 header("Content-Type: application/json");
-require __DIR__ . "/db.php";
+require_once __DIR__ . '/../koneksi.php';
 
 $rows = $pdo->query("
   SELECT jk.id, jk.tanggal, jk.catatan,
