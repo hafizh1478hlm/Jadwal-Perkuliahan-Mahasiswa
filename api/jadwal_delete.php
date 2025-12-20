@@ -1,6 +1,6 @@
 <?php
-header("Content-Type: application/json");
-require __DIR__ . "/db.php";
+header('Content-Type: application/json; charset=utf-8');
+require_once __DIR__ . '/db.php';
 
 $id = isset($_GET["id"]) ? intval($_GET["id"]) : 0;
 if ($id <= 0) {

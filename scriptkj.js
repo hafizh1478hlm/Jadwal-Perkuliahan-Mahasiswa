@@ -30,9 +30,9 @@ const searchInput = document.getElementById("searchInput");
 const suggestions = document.getElementById("suggestions");
 
 const keywords = [
-  { words: ["edit jadwal", "ubah jadwal", "tanggal", "kalender jadwal", "tambah catatan", "catatan jadwal"], page: "kelolajadwal.html", label: "Kelola Jadwal" },
-  { words: ["jadwal utama", "jadwal default", "jadwal mata kuliah"], page: "jadwalutama.html", label: "Jadwal Utama" },
-  { words: ["beranda", "dashboard", "home"], page: "dashboard.html", label: "Dashboard" }
+  { words: ["edit jadwal", "ubah jadwal", "tanggal", "kalender jadwal", "tambah catatan", "catatan jadwal"], page: "kelolajadwal.php", label: "Kelola Jadwal" },
+  { words: ["jadwal utama", "jadwal default", "jadwal mata kuliah"], page: "jadwalutama.php", label: "Jadwal Utama" },
+  { words: ["beranda", "dashboard", "home"], page: "dashboard.php", label: "Dashboard" }
 ];
 
 let currentFocus = -1;
@@ -120,6 +120,10 @@ searchInput.addEventListener("keydown", function (e) {
     e.preventDefault();
     if (currentFocus > -1 && selectableItems[currentFocus]) {
       selectableItems[currentFocus].click();
+      return;
+    }
+    if (selectableItems.length > 0) {
+      selectableItems[0].click();
     }
   }
 });

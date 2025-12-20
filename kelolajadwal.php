@@ -25,9 +25,8 @@
         <div class="nav-right">
             <div class="search-container me-3 position-relative">
                 <input type="text" id="searchInput" placeholder="Search..." class="form-control form-control-sm"
-                    style="width: 180px; border-radius: 20px; padding-left: 12px;" />
-                <ul id="suggestions" class="list-group position-absolute w-100"
-                    style="top: 35px; display:none; z-index:1000;">
+                    style="width: 180px; border-radius: 20px; padding-left: 12px;" autocomplete="off"/>
+                <ul id="suggestions" class="list-group position-absolute w-100" style="top: 35px; display:none; z-index:1000;">
                 </ul>
             </div>
 

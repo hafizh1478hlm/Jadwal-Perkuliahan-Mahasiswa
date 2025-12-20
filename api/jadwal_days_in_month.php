@@ -1,6 +1,6 @@
 <?php
-header("Content-Type: application/json");
-require __DIR__ . "/db.php";
+header('Content-Type: application/json; charset=utf-8');
+require_once __DIR__ . '/db.php';
 
 $year  = isset($_GET["year"]) ? (int)$_GET["year"] : (int)date("Y");
 $month = isset($_GET["month"]) ? (int)$_GET["month"] : (int)date("m");
