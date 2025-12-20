@@ -1,19 +1,3 @@
-<?php 
-
-include 'koneksi.php'; 
-
-$keyword = isset($_GET['search']) ? $_GET['search'] : '';
-$where_clause = "";
-
-if (!empty($keyword)) {
-    $safe_keyword = $conn->real_escape_string($keyword); 
-    $where_clause = " WHERE 
-        matkul LIKE '%$safe_keyword%' OR 
-        dosen LIKE '%$safe_keyword%' OR 
-        hari LIKE '%$safe_keyword%'";
-}
-
-?>
 <!DOCTYPE html>
 <html lang="id">
 
