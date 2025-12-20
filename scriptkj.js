@@ -39,70 +39,54 @@ let currentFocus = -1;
 let selectableItems = [];
 
 searchInput.addEventListener("input", function () {
-  const inputValue = this.value.toLowerCase();
-  suggestions.innerHTML = "";
-  if (!inputValue) {
+  const keyword = this.value.trim();
+
+  if (keyword.length === 0) {
     suggestions.style.display = "none";
+    suggestions.innerHTML = "";
     return;
   }
 
-  let keywordMatches = [];
-  let pageMatches = new Map();
+  clearTimeout(window._searchTimer);
+  window._searchTimer = setTimeout(async () => {
+    try {
+      const response = await fetch(
+        "search.php?keyword=" + encodeURIComponent(keyword)
+      );
 
-  keywords.forEach(group => {
-    let hasKeyword = false;
-    group.words.forEach(word => {
-      if (word.toLowerCase().includes(inputValue)) {
-        keywordMatches.push({ word, page: group.page });
-        hasKeyword = true;
+      if (!response.ok) throw new Error("Network error");
+
+      const data = await response.json();
+      console.log("RAW DATA FROM PHP:", data);
+
+      suggestions.innerHTML = "";
+
+      if (!Array.isArray(data) || data.length === 0) {
+        suggestions.style.display = "none";
+        return;
       }
-    });
-    if (hasKeyword) pageMatches.set(group.page, group.label);
-  });
 
-  if (keywordMatches.length > 0) {
-    suggestions.style.display = "block";
+      data.forEach(item => {
+        console.log("ITEM:", item);
 
-    // list keyword
-    keywordMatches.forEach(item => {
-      const li = document.createElement("li");
-      li.textContent = item.word;
-      li.dataset.page = item.page;
-      li.addEventListener("click", () => {
-        window.location.href = item.page;
+        const li = document.createElement("li");
+        li.className = "list-group-item";
+        li.textContent = `${item.matkul} — ${item.dosen}`;
+        li.onclick = () => {
+          window.location.href = "jadwalutama.php?id=" + item.id_jadwal;
+        };
+        suggestions.appendChild(li);
       });
-      suggestions.appendChild(li);
-    });
 
-    // divider
-    const divider = document.createElement("li");
-    divider.style.borderTop = "1px solid #ddd";
-    divider.style.margin = "5px 0";
-    divider.style.cursor = "default";
-    divider.style.background = "#f9f9f9";
-    suggestions.appendChild(divider);
+      suggestions.style.display = "block";
+      selectableItems = Array.from(suggestions.querySelectorAll("li"));
+      currentFocus = -1;
 
-    // tampilkan nama halaman (bukan nama file)
-    pageMatches.forEach((label, page) => {
-      const li = document.createElement("li");
-      li.innerHTML = `<span style="color:#777;">→ ${label}</span>`;
-      li.style.fontSize = "13px";
-      li.style.textAlign = "center";
-      li.dataset.page = page;
-      li.addEventListener("click", () => {
-        window.location.href = page;
-      });
-      suggestions.appendChild(li);
-    });
-
-    selectableItems = Array.from(suggestions.querySelectorAll("li")).filter(
-      li => li.style.cursor !== "default"
-    );
-  } else {
-    suggestions.style.display = "none";
-  }
-
-  currentFocus = -1;
+    } catch (err) {
+      console.error(err);
+      suggestions.style.display = "none";
+    }
+  }, 220);
 });
 
 searchInput.addEventListener("keydown", function (e) {
