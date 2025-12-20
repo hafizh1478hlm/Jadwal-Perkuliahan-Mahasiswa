@@ -71,8 +71,7 @@ if (!empty($keyword)) {
 
     <div class="container">
         <h1>Jadwal Utama</h1>
-        <p>Halaman ini menampilkan jadwal perkuliahan utama mahasiswa.
-            Setiap perubahan yang dilakukan pada halaman "Kelola Jadwal" akan otomatis diperbarui ditabel ini.
+        <p>Halaman ini berfungsi sebagai pusat informasi jadwal perkuliahan mahasiswa yang menyajikan data mata kuliah dan dosen secara sistematis serta akurat sebagai panduan akademik harian.
         </p>
         <table class="jadwal-table">
         <thead>
