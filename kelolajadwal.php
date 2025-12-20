@@ -1,3 +1,19 @@
+<?php 
+
+include 'koneksi.php'; 
+
+$keyword = isset($_GET['search']) ? $_GET['search'] : '';
+$where_clause = "";
+
+if (!empty($keyword)) {
+    $safe_keyword = $conn->real_escape_string($keyword); 
+    $where_clause = " WHERE 
+        matkul LIKE '%$safe_keyword%' OR 
+        dosen LIKE '%$safe_keyword%' OR 
+        hari LIKE '%$safe_keyword%'";
+}
+
+?>
 <!DOCTYPE html>
 <html lang="id">
 
@@ -25,9 +41,8 @@
         <div class="nav-right">
             <div class="search-container me-3 position-relative">
                 <input type="text" id="searchInput" placeholder="Search..." class="form-control form-control-sm"
-                    style="width: 180px; border-radius: 20px; padding-left: 12px;" />
-                <ul id="suggestions" class="list-group position-absolute w-100"
-                    style="top: 35px; display:none; z-index:1000;">
+                    style="width: 180px; border-radius: 20px; padding-left: 12px;" autocomplete="off"/>
+                <ul id="suggestions" class="list-group position-absolute w-100" style="top: 35px; display:none; z-index:1000;">
                 </ul>
             </div>
 
