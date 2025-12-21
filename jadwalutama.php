@@ -38,18 +38,19 @@ if (!empty($keyword)) {
             </div>
         </div>
 
-    <!-- SEARCH BAR -->
-    <div class="nav-right">
-      <div class="search-container me-3 position-relative">
-        <input type="text" id="searchInput" placeholder="Search..." class="form-control form-control-sm"
-          style="width: 180px; border-radius: 20px; padding-left: 12px;" autocomplete="off"/>
-        <ul id="suggestions" class="list-group position-absolute w-100" style="top: 35px; display:none; z-index:1000;">
-        </ul>
-      </div>
+        <!-- SEARCH BAR -->
+        <div class="nav-right">
+            <div class="search-container me-3 position-relative">
+                <input type="text" id="searchInput" placeholder="Search..." class="form-control form-control-sm"
+                    style="width: 180px; border-radius: 20px; padding-left: 12px;" autocomplete="off" />
+                <ul id="suggestions" class="list-group position-absolute w-100"
+                    style="top: 35px; display:none; z-index:1000;">
+                </ul>
+            </div>
 
-      <i class="fa-solid fa-bars menu-icon ms-2"></i>
-      <i class="fa-regular fa-circle-user user-icon ms-3"></i>
-    </div>
+            <i class="fa-solid fa-bars menu-icon ms-2"></i>
+            <i class="fa-regular fa-circle-user user-icon ms-3"></i>
+        </div>
     </header>
 
     <!-- MENU POP-UP -->
@@ -64,27 +65,51 @@ if (!empty($keyword)) {
     <!-- USER POP-UP -->
     <div class="popup-user" id="userPopup">
         <ul>
-            <li><a href="index.php">Keluar</a></li>
-            <li><a href=#>Ubah Sandi</a></li>
+            <li><a href="logout.php">Keluar</a></li>
+            <li><a href="#" id="btnUbahSandi">Ubah Sandi</a></li>
         </ul>
     </div>
 
+    <!-- POPUP UBAH SANDI -->
+    <div class="modal" id="changePasswordModal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="change-header">
+                <div class="icon-lock">
+                    🔒
+                </div>
+                <h3>Ubah Sandi</h3>
+                <p>Masukkan sandi baru Anda</p>
+            </div>
+
+            <form method="POST" action="ubah_sandi.php">
+                <input type="password" name="password_lama" placeholder="Sandi lama" required>
+                <input type="password" name="password_baru" placeholder="Sandi baru" required>
+                <input type="password" name="konfirmasi_password" placeholder="Konfirmasi sandi" required>
+                <button type="submit">Simpan</button>
+                <p id="pesanUbahSandi"></p>
+            </form>
+        </div>
+    </div>
+
+
     <div class="container">
         <h1>Jadwal Utama</h1>
-        <p>Halaman ini menampilkan pusat informasi jadwal perkuliahan mahasiswa yang menyajikan data mata kuliah dan dosen secara sistematis serta akurat sebagai panduan akademik harian.
+        <p>Halaman ini menampilkan pusat informasi jadwal perkuliahan mahasiswa yang menyajikan data mata kuliah dan
+            dosen secara sistematis serta akurat sebagai panduan akademik harian.
         </p>
         <table class="jadwal-table">
-        <thead>
-    <tr style="background-color: #ffeb3b;">
-        <th style="color: black;">Hari</th>
-        <th style="color: black;">Jam Mulai</th>
-        <th style="color: black;">Jam Selesai</th>
-        <th style="color: black;">Mata Kuliah</th>
-        <th style="color: black;">Dosen</th>
-    </tr>
-</thead>
-<tbody>
-    <?php
+            <thead>
+                <tr style="background-color: #ffeb3b;">
+                    <th style="color: black;">Hari</th>
+                    <th style="color: black;">Jam Mulai</th>
+                    <th style="color: black;">Jam Selesai</th>
+                    <th style="color: black;">Mata Kuliah</th>
+                    <th style="color: black;">Dosen</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
     // Query disederhanakan tanpa JOIN
     $query = "SELECT * FROM jd_utama $where_clause 
           ORDER BY FIELD(hari, 'SENIN', 'SELASA', 'RABU', 'KAMIS', 'JUMAT', 'SABTU', 'MINGGU'), jam_mulai";
@@ -118,7 +143,7 @@ if (!empty($keyword)) {
         echo "<tr><td colspan='4' class='text-center'>Jadwal tidak ditemukan.</td></tr>";
     }
     ?>
-</tbody>
+            </tbody>
         </table>
     </div>
     <!-- Footer -->

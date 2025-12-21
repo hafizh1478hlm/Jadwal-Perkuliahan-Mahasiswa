@@ -127,22 +127,23 @@ document.addEventListener("click", function (e) {
 
 // --- POP-UP UBAH SADI ---
 
-const btnUbahSandi = document.getElementById("btnUbahSandi");
-const popupUbahSandi = document.getElementById("popupUbahSandi");
-const closePopup = document.querySelector(".close-popup");
+const modal = document.getElementById("changePasswordModal");
+const openBtn = document.getElementById("btnUbahSandi"); // ⬅️ INI YANG BENER
+const closeBtn = modal.querySelector(".close");
 
-btnUbahSandi.addEventListener("click", (e) => {
+openBtn.addEventListener("click", (e) => {
   e.preventDefault();
-  popupUbahSandi.style.display = "flex";
+  modal.style.display = "flex";
   userPopup.style.display = "none";
 });
 
-closePopup.addEventListener("click", () => {
-  popupUbahSandi.style.display = "none";
+closeBtn.addEventListener("click", () => {
+  modal.style.display = "none";
 });
 
-popupUbahSandi.addEventListener("click", (e) => {
-  if (e.target === popupUbahSandi) {
-    popupUbahSandi.style.display = "none";
+window.addEventListener("click", (e) => {
+  if (e.target === modal) {
+    modal.style.display = "none";
   }
 });
+// --- END POP-UP UBAH SANDI ---

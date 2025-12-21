@@ -127,3 +127,27 @@ searchInput.addEventListener("input", function () {
     items.forEach(item => item.classList.remove("active"));
   }
 });
+
+
+// --- POP-UP UBAH SADI ---
+
+const modal = document.getElementById("changePasswordModal");
+const openBtn = document.getElementById("btnUbahSandi"); // ⬅️ INI YANG BENER
+const closeBtn = modal.querySelector(".close");
+
+openBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+  modal.style.display = "flex";
+  userPopup.style.display = "none";
+});
+
+closeBtn.addEventListener("click", () => {
+  modal.style.display = "none";
+});
+
+window.addEventListener("click", (e) => {
+  if (e.target === modal) {
+    modal.style.display = "none";
+  }
+});
+// --- END POP-UP UBAH SANDI ---

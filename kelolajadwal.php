@@ -25,8 +25,9 @@
         <div class="nav-right">
             <div class="search-container me-3 position-relative">
                 <input type="text" id="searchInput" placeholder="Search..." class="form-control form-control-sm"
-                    style="width: 180px; border-radius: 20px; padding-left: 12px;" autocomplete="off"/>
-                <ul id="suggestions" class="list-group position-absolute w-100" style="top: 35px; display:none; z-index:1000;">
+                    style="width: 180px; border-radius: 20px; padding-left: 12px;" autocomplete="off" />
+                <ul id="suggestions" class="list-group position-absolute w-100"
+                    style="top: 35px; display:none; z-index:1000;">
                 </ul>
             </div>
 
@@ -48,18 +49,40 @@
     <!-- USER POP-UP -->
     <div class="popup-user" id="userPopup">
         <ul>
-
-            <li><a href="index.php">Keluar</a></li>
-            <li><a href=#>Ubah Sandi</a></li>
-
+            <li><a href="logout.php">Keluar</a></li>
+            <li><a href="#" id="btnUbahSandi">Ubah Sandi</a></li>
         </ul>
     </div>
+
+    <!-- POPUP UBAH SANDI -->
+    <div class="modal" id="changePasswordModal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="change-header">
+                <div class="icon-lock">
+                    🔒
+                </div>
+                <h3>Ubah Sandi</h3>
+                <p>Masukkan sandi baru Anda</p>
+            </div>
+
+            <form method="POST" action="ubah_sandi.php">
+                <input type="password" name="password_lama" placeholder="Sandi lama" required>
+                <input type="password" name="password_baru" placeholder="Sandi baru" required>
+                <input type="password" name="konfirmasi_password" placeholder="Konfirmasi sandi" required>
+                <button type="submit">Simpan</button>
+                <p id="pesanUbahSandi"></p>
+            </form>
+        </div>
+    </div>
+
 
     <!-- MAIN CONTENT -->
     <div class="container">
         <h1>Kelola Jadwal</h1>
         <p>
-            Pilih tanggal pada kalender untuk menambahkan, mengubah, atau menghapus jadwal dan catatan sesuai kebutuhanmu.
+            Pilih tanggal pada kalender untuk menambahkan, mengubah, atau menghapus jadwal dan catatan sesuai
+            kebutuhanmu.
         </p>
 
         <!-- Kalender -->
@@ -103,7 +126,7 @@
         <div class="popup-content">
             <h3>Masukkan Jadwal Kuliah</h3>
             <select id="mataKuliahSelect">
-                    <option value="" disabled selected>Pilih Mata Kuliah</option>
+                <option value="" disabled selected>Pilih Mata Kuliah</option>
             </select>
 
             <select id="dosenSelect">

@@ -72,7 +72,7 @@ if (isset($_POST['login'])) {
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(21, 38, 68, 0.259);
+            background: rgba(18, 35, 64, 0.41);
         }
 
         .logo-top-left {
@@ -185,8 +185,20 @@ if (isset($_POST['login'])) {
             background: #ff9131;
             color: #f6f6f6;
         }
-    </style>
-</head>
+
+        /* HILANGIN ICON MATA BAWAAN BROWSER */
+        input[type="password"]::-ms-reveal,
+        input[type="password"]::-ms-clear {
+            display: none;
+        }
+
+        input[type="password"]::-webkit-credentials-auto-fill-button {
+            visibility: hidden;
+            position: absolute;
+            right: 0;
+        }
+
+        </style></head>
 
 <body>
 

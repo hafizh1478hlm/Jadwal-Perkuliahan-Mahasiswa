@@ -67,22 +67,27 @@ include 'koneksi.php';
   </div>
 
 <!-- POPUP UBAH SANDI -->
-<div class="popup-ubah-sandi" id="popupUbahSandi">
-  <div class="popup-box">
-    <span class="close-popup">&times;</span>
+<div class="modal" id="changePasswordModal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <div class="change-header">
+      <div class="icon-lock">
+        🔒
+      </div>
+      <h3>Ubah Sandi</h3>
+      <p>Masukkan sandi baru Anda</p>
+    </div>
 
-    <h4>Ubah Sandi</h4>
-
-    <form id="formUbahSandi">
+    <form method="POST" action="ubah_sandi.php">
       <input type="password" name="password_lama" placeholder="Sandi lama" required>
       <input type="password" name="password_baru" placeholder="Sandi baru" required>
       <input type="password" name="konfirmasi_password" placeholder="Konfirmasi sandi" required>
-
       <button type="submit">Simpan</button>
       <p id="pesanUbahSandi"></p>
     </form>
   </div>
 </div>
+
 
 
   <!-- HERO SECTION -->
