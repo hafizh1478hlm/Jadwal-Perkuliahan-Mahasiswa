@@ -41,81 +41,59 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchInput = document.getElementById("searchInput");
   const suggestions = document.getElementById("suggestions");
 
-  const keywords = [
-    { words: ["edit jadwal", "ubah jadwal", "tanggal", "kalender jadwal", "tambah catatan", "catatan jadwal"], page: "kelolajadwal.php", label: "Kelola Jadwal" },
-    { words: ["jadwal utama", "jadwal default", "jadwal mata kuliah", "dasar pemrograman", "dasar pemrograman web", "pengantar proyek perangkat lunak", "sistem komputer", "matematika", "pendidikan pancasila", "pengantar teknologi informasi"], page: "jadwalutama.php", label: "Jadwal Utama" },
-    { words: ["beranda", "dashboard", "home"], page: "dashboard.php", label: "Beranda" }
-  ];
-
   let currentFocus = -1;
   let selectableItems = [];
 
-  searchInput.addEventListener("input", function () {
-    const inputValue = this.value.toLowerCase();
+// Ganti bagian input listener kamu dengan ini ya, Zaraa
+searchInput.addEventListener("input", function () {
+  const keyword = this.value.trim();
+
+  if (keyword.length === 0) {
+    suggestions.style.display = "none";
     suggestions.innerHTML = "";
-    if (!inputValue) {
-      suggestions.style.display = "none";
-      return;
-    }
+    return;
+  }
 
-    let keywordMatches = [];
-    let pageMatches = new Map();
+  // Pakai timer (debounce) biar gak berat pas ngetik
+  clearTimeout(window._searchTimer);
+  window._searchTimer = setTimeout(async () => {
+    try {
+      // Ambil data dari file PHP temenmu
+      const response = await fetch("search.php?keyword=" + encodeURIComponent(keyword));
+      if (!response.ok) throw new Error("Network error");
 
-    keywords.forEach(group => {
-      let hasKeyword = false;
-      group.words.forEach(word => {
-        if (word.toLowerCase().includes(inputValue)) {
-          keywordMatches.push({ word, page: group.page });
-          hasKeyword = true;
-        }
+      const data = await response.json();
+      suggestions.innerHTML = "";
+
+      if (!Array.isArray(data) || data.length === 0) {
+        suggestions.style.display = "none";
+        return;
+      }
+
+      // Looping hasil dari database
+      data.forEach(item => {
+        const li = document.createElement("li");
+        li.className = "list-group-item"; // Sesuaikan class CSS kamu
+        li.textContent = `${item.matkul} — ${item.dosen}`;
+        li.onclick = () => {
+          // Pindah ke halaman detail sesuai ID dari database
+          window.location.href = "jadwalutama.php?id=" + item.id_jadwal;
+        };
+        suggestions.appendChild(li);
       });
-      if (hasKeyword) pageMatches.set(group.page, group.label);
-    });
 
-    if (keywordMatches.length > 0) {
       suggestions.style.display = "block";
+      
+      // Update list buat navigasi keyboard
+      selectableItems = Array.from(suggestions.querySelectorAll("li"));
+      currentFocus = -1;
 
-      // list keyword
-      keywordMatches.forEach(item => {
-        const li = document.createElement("li");
-        li.textContent = item.word;
-        li.dataset.page = item.page;
-        li.addEventListener("click", () => {
-          window.location.href = item.page;
-        });
-        suggestions.appendChild(li);
-      });
-
-      // divider
-      const divider = document.createElement("li");
-      divider.style.borderTop = "1px solid #ddd";
-      divider.style.margin = "5px 0";
-      divider.style.cursor = "default";
-      divider.style.background = "#f9f9f9";
-      suggestions.appendChild(divider);
-
-      // tampilkan nama halaman (bukan nama file)
-      pageMatches.forEach((label, page) => {
-        const li = document.createElement("li");
-        li.innerHTML = `<span style="color:#777;">→ ${label}</span>`;
-        li.style.fontSize = "13px";
-        li.style.textAlign = "center";
-        li.dataset.page = page;
-        li.addEventListener("click", () => {
-          window.location.href = page;
-        });
-        suggestions.appendChild(li);
-      });
-
-      selectableItems = Array.from(suggestions.querySelectorAll("li")).filter(
-        li => li.style.cursor !== "default"
-      );
-    } else {
+    } catch (err) {
+      console.error("Gagal ambil data:", err);
       suggestions.style.display = "none";
     }
-
-    currentFocus = -1;
-  });
+  }, 220);
+});
 
   searchInput.addEventListener("keydown", function (e) {
     if (!suggestions.style.display || suggestions.style.display === "none") return;
