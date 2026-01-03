@@ -150,7 +150,7 @@ body > header.navbar {
 /* HERO SECTION */
 .hero {
   margin-top: 100px; /* biar ga ketiban navbar */
-  background: linear-gradient(rgba(8, 70, 141, 0.585), rgba(0, 0, 0, 0.83)),
+  background: linear-gradient(rgba(5, 58, 119, 0.585), rgba(0, 0, 0, 0.83)),
     url('home.jpg') center/cover no-repeat;
   height: 100vh; /* biar hero-nya gede full layar */
   width: 100%;
@@ -173,16 +173,16 @@ body > header.navbar {
 }
 
 .hero-content p {
-  font-size: 25px;
+  font-size: 22px;
   font-weight: 300;
-  margin-bottom: 30px;
+  margin-bottom: 15px;
   margin-top: 2px;
 }
 
 .btn-hero {
   background-color: #fdcf03;
   color: #03254C;
-  padding: 15px 45px;
+  padding: 10px 40px;
   text-decoration: none;
   border-radius: 50px;
   font-weight: 700;
@@ -266,7 +266,7 @@ body > header.navbar {
 }
 
 .feature-item:hover {
-    box-shadow: 0 10px 20px rgba(55, 57, 66, 0.167);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.167);
     transform: translateY(-5px);
 }
 
@@ -298,8 +298,8 @@ body > header.navbar {
   align-items: center;
   padding: 50px 20px 150px 20px;
   margin-bottom: 0;
-  background-color: #f4f7fa;
-  background: linear-gradient(180deg, #ffffff 0%, #f4f7fa 100%); /* Gradasi halus agar tidak flat */
+  background-color: #dde7f1;
+  background: linear-gradient(180deg, #ffffff 0%, #f3f3f3 100%); /* Gradasi halus agar tidak flat */
   color: #03254C;
   overflow: visible; /* Biar bayangan kartu tidak terpotong */
 }
@@ -398,7 +398,7 @@ body > header.navbar {
 /* EFEK SAAT HOVER */
 .team-card:hover {
     transform: translateY(-10px); /* Card naik tanpa ngerusak layout bawah */
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.163);
     z-index: 10; /* Agar kartu yang di-hover berada di depan */
 }
 
