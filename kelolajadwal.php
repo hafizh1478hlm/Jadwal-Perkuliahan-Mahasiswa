@@ -40,7 +40,6 @@
     <!-- MENU POP-UP -->
     <div class="popup-menu" id="menuPopup">
         <ul>
-            <li><a href="dashboard.php">Dashboard</a></li>
             <li><a href="kelolajadwal.php">Kelola Jadwal</a></li>
             <li><a href="jadwalutama.php">Jadwal Utama</a></li>
         </ul>

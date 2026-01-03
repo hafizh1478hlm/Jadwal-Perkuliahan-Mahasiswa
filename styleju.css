@@ -12,6 +12,7 @@ body, html {
 
 body > header.navbar {
   position: fixed !important;
+  padding: 0% !important ;
   top: 0;
   left: 0;
   width: 100%;
@@ -30,7 +31,7 @@ body > header.navbar {
   width: 100%;
   top: 0;
   left: 0;
-  z-index: 10000; /* naikin z-index-nya */
+  z-index: 100000; /* naikin z-index-nya */
 }
 
 .nav-left {
@@ -303,10 +304,9 @@ body > header.navbar {
 
 .container {
     max-width: 800px;
-    margin: 128px 40px 40px 40px; /* Center the container */
+    margin: 135px 40px 70px 40px; /* Center the container */
     background: white;
-    padding-top: 30px;
-    padding-bottom: 30px;
+    padding: 40px 12px 60px 12px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
