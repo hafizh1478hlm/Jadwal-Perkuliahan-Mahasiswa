@@ -1,4 +1,6 @@
-// === Navbar Popup Logic ===
+// ======================================================
+// NAVBAR POPUP
+// ======================================================
 const menuIcon = document.querySelector('.menu-icon');
 const userIcon = document.querySelector('.user-icon');
 const menuPopup = document.getElementById('menuPopup');
@@ -26,6 +28,9 @@ window.addEventListener('click', (e) => {
   }
 });
 
+// ======================================================
+// SEARCH AUTOCOMPLETE
+// ======================================================
 const searchInput = document.getElementById("searchInput");
 const suggestions = document.getElementById("suggestions");
 
@@ -34,8 +39,7 @@ let selectableItems = [];
 
 searchInput.addEventListener("input", function () {
   const keyword = this.value.trim();
-
-  if (keyword.length === 0) {
+  if (!keyword) {
     suggestions.style.display = "none";
     suggestions.innerHTML = "";
     return;
@@ -44,272 +48,248 @@ searchInput.addEventListener("input", function () {
   clearTimeout(window._searchTimer);
   window._searchTimer = setTimeout(async () => {
     try {
-      const response = await fetch(
-        "search.php?keyword=" + encodeURIComponent(keyword)
-      );
-
-      if (!response.ok) throw new Error("Network error");
-
-      const data = await response.json();
-      console.log("RAW DATA FROM PHP:", data);
+      const res = await fetch("search.php?keyword=" + encodeURIComponent(keyword));
+      const data = await res.json();
 
       suggestions.innerHTML = "";
-
-      if (!Array.isArray(data) || data.length === 0) {
+      if (!Array.isArray(data) || !data.length) {
         suggestions.style.display = "none";
         return;
       }
 
       data.forEach(item => {
-        console.log("ITEM:", item);
-
         const li = document.createElement("li");
         li.className = "list-group-item";
         li.textContent = `${item.matkul} — ${item.dosen}`;
-        li.onclick = () => {
-          window.location.href = "jadwalutama.php?id=" + item.id_jadwal;
-        };
+        li.onclick = () => window.location.href = "jadwalutama.php?id=" + item.id_jadwal;
         suggestions.appendChild(li);
       });
 
       suggestions.style.display = "block";
       selectableItems = Array.from(suggestions.querySelectorAll("li"));
       currentFocus = -1;
-
-    } catch (err) {
-      console.error(err);
+    } catch {
       suggestions.style.display = "none";
     }
-  }, 220);
+  }, 250);
 });
 
 searchInput.addEventListener("keydown", function (e) {
   if (suggestions.style.display === "none") return;
 
   if (e.key === "ArrowDown") {
-    e.preventDefault();
     currentFocus++;
-    addActive(selectableItems);
   } else if (e.key === "ArrowUp") {
-    e.preventDefault();
     currentFocus--;
-    addActive(selectableItems);
   } else if (e.key === "Enter") {
     e.preventDefault();
     if (currentFocus > -1 && selectableItems[currentFocus]) {
       selectableItems[currentFocus].click();
     }
-  }
+    return;
+  } else return;
+
+  selectableItems.forEach(i => i.classList.remove("active"));
+  if (currentFocus >= selectableItems.length) currentFocus = 0;
+  if (currentFocus < 0) currentFocus = selectableItems.length - 1;
+  selectableItems[currentFocus].classList.add("active");
 });
 
-function addActive(items) {
-  if (!items.length) return;
-  removeActive(items);
-
-  if (currentFocus >= items.length) currentFocus = 0;
-  if (currentFocus < 0) currentFocus = items.length - 1;
-
-  items[currentFocus].classList.add("active");
-}
-
-function removeActive(items) {
-  items.forEach(item => item.classList.remove("active"));
-}
-
-document.addEventListener("click", function (e) {
-  if (
-    !searchInput.contains(e.target) &&
-    !suggestions.contains(e.target)
-  ) {
-    suggestions.style.display = "none";
-  }
-});
-
-// =================================================================
-// === Calendar & Database Logic - FINAL VERSION ===
-// =================================================================
+// ======================================================
+// CALENDAR + POPUP + DATABASE
+// ======================================================
 document.addEventListener('DOMContentLoaded', () => {
-    const API_BASE = './api';
-    const calendarGrid = document.querySelector('.calendar-grid');
-    const currentMonthYear = document.getElementById('currentMonthYear');
-    const prevMonth = document.getElementById('prevMonth');
-    const nextMonth = document.getElementById('nextMonth');
+  const API_BASE = './api';
 
-    const jadwalInputPopup = document.getElementById('jadwalInputPopup');
-    const kirimBtn = document.getElementById('kirimJadwal');
-    const batalBtn = document.getElementById('batalJadwal');
+  const calendarGrid = document.getElementById('calendarGrid');
+  const currentMonthYear = document.getElementById('currentMonthYear');
+  const prevMonth = document.getElementById('prevMonth');
+  const nextMonth = document.getElementById('nextMonth');
 
-    let currentDate = new Date();
-    let activeDay = null;
-    let activeDateISO = null;
+  const jadwalInputPopup = document.getElementById('jadwalInputPopup');
+  const kirimBtn = document.getElementById('kirimJadwal');
+  const batalBtn = document.getElementById('batalJadwal');
 
-    // --- Helper Fungsi API (DIPERBAIKI) ---
-    async function apiJSON(url, options) {
-        const res = await fetch(url, options);
-        const text = await res.text(); // Ambil teks mentah dulu
-        
-        try {
-            return JSON.parse(text); // Coba ubah ke JSON
-        } catch (e) {
-            // Jika gagal, tampilkan error asli dari PHP di console
-            console.error("Respon Server Bukan JSON:", text);
-            throw new Error(`Server Error: ${text.substring(0, 100)}...`);
-        }
+  let currentDate = new Date();
+  let activeDay = null;
+  let activeDateISO = null;
+
+  // ---------------- API JSON HELPER ----------------
+  async function apiJSON(url, options) {
+    const res = await fetch(url, options);
+    const text = await res.text();
+    try { return JSON.parse(text); }
+    catch { throw new Error(text); }
+  }
+
+  // ---------------- CUSTOM DROPDOWN ----------------
+  function createDropdown(inputId, menuId, apiUrl, fields) {
+    const input = document.getElementById(inputId);
+    const menu = document.getElementById(menuId);
+    let cache = [];
+    let idx = -1;
+
+    function getVal(o) {
+      if (typeof o === "string") return o;
+      for (let f of fields) if (o[f]) return o[f];
+      return Object.values(o)[0];
     }
 
-    // --- Dropdowns Datalist ---
-    async function loadDropdownsFromDB() {
-        const fillDatalist = async (listId, url) => {
-            try {
-                const data = await apiJSON(url);
-                const listEl = document.getElementById(listId);
-                if (Array.isArray(data) && listEl) {
-                    listEl.innerHTML = data.map(x => {
-                        const val = x.nama || x.matkul || x.dosen || x.ruangan || Object.values(x)[0];
-                        return `<option value="${val}"></option>`;
-                    }).join('');
-                }
-            } catch (err) { 
-                console.error(`Gagal load ${listId}:`, err); 
-            }
+    function render(list) {
+      menu.innerHTML = list.map((v, i) =>
+        `<div class="dd-item" data-i="${i}">${v}</div>`
+      ).join("");
+      menu.style.display = list.length ? "block" : "none";
+      idx = -1;
+
+      menu.querySelectorAll(".dd-item").forEach(el => {
+        el.onclick = () => {
+          input.value = el.textContent;
+          menu.style.display = "none";
         };
-
-        await Promise.all([
-            fillDatalist('matkulList', `${API_BASE}/mata_kuliah_list.php`),
-            fillDatalist('dosenList', `${API_BASE}/dosen_list.php`),
-            fillDatalist('ruanganList', `${API_BASE}/ruangan_list.php`)
-        ]);
+      });
     }
 
-    // --- Reset Form Fungsi ---
-    function resetPopupForm() {
-        document.getElementById('matkulInput').value = "";
-        document.getElementById('dosenInput').value = "";
-        document.getElementById('ruanganInput').value = "";
-        document.getElementById('jamMulaiInput').value = "";
-        document.getElementById('jamSelesaiInput').value = "";
-        document.getElementById('manualTimeInput').value = "";
-        document.getElementById('catatanInput').value = "";
-        if (activeDay) activeDay.classList.remove('active');
+    function filter() {
+      const q = input.value.toLowerCase();
+      render(cache.filter(x => x.toLowerCase().includes(q)).slice(0, 8));
     }
 
-    // --- Kalender Render ---
-    function renderCalendar(date) {
-        calendarGrid.innerHTML = `
-            <div class="day-name">SUN</div><div class="day-name">MON</div>
-            <div class="day-name">TUE</div><div class="day-name">WED</div>
-            <div class="day-name">THU</div><div class="day-name">FRI</div>
-            <div class="day-name">SAT</div>`;
-            
-        const year = date.getFullYear();
-        const month = date.getMonth();
-        const firstDay = new Date(year, month, 1).getDay();
-        const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-        currentMonthYear.textContent = `${date.toLocaleString('id-ID', { month: 'long' })} ${year}`;
-
-        for (let i = 0; i < firstDay; i++) {
-            const empty = document.createElement('div');
-            empty.className = 'calendar-day empty';
-            calendarGrid.appendChild(empty);
-        }
-
-        for (let day = 1; day <= daysInMonth; day++) {
-            const d = document.createElement('div');
-            d.className = 'calendar-day';
-            d.textContent = day;
-            d.onclick = async () => {
-                if (activeDay) activeDay.classList.remove('active');
-                d.classList.add('active');
-                activeDay = d;
-                activeDateISO = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-                
-                await loadDropdownsFromDB();
-                jadwalInputPopup.style.display = 'flex'; 
-            };
-            calendarGrid.appendChild(d);
-        }
+    async function load() {
+      const data = await apiJSON(apiUrl);
+      cache = (Array.isArray(data) ? data : []).map(getVal);
     }
 
-    // --- LOGIKA KIRIM (Disesuaikan Input Baru) ---
-    kirimBtn.onclick = async () => {
-    // 1. Ambil input
-    const inputs = {
-        matkul: document.getElementById('matkulInput'),
-        dosen: document.getElementById('dosenInput'),
-        ruangan: document.getElementById('ruanganInput'),
-        mulai: document.getElementById('jamMulaiInput'),
-        selesai: document.getElementById('jamSelesaiInput'),
-        manual: document.getElementById('manualTimeInput'),
-        catatan: document.getElementById('catatanInput')
+    input.oninput = filter;
+    input.onfocus = () => render(cache.slice(0, 8));
+
+    input.onkeydown = (e) => {
+      const items = menu.querySelectorAll(".dd-item");
+      if (!items.length) return;
+
+      if (e.key === "ArrowDown") idx = (idx + 1) % items.length;
+      else if (e.key === "ArrowUp") idx = (idx - 1 + items.length) % items.length;
+      else if (e.key === "Enter" && idx >= 0) items[idx].click();
+      else return;
+
+      items.forEach(i => i.classList.remove("active"));
+      items[idx]?.classList.add("active");
+      e.preventDefault();
     };
 
-    // 2. Olah Waktu (Manual vs Picker)
-    let finalMulai = inputs.mulai.value;
-    let finalSelesai = inputs.selesai.value;
+    document.addEventListener("click", e => {
+      if (!e.target.closest(`#${inputId}`) && !e.target.closest(`#${menuId}`))
+        menu.style.display = "none";
+    });
 
-    if (inputs.manual.value.trim() !== "") {
-        const parts = inputs.manual.value.split('-');
-        finalMulai = parts[0]?.trim() || inputs.manual.value;
-        finalSelesai = parts[1]?.trim() || "";
+    return { load, hide: () => menu.style.display = "none" };
+  }
+
+  const ddMatkul = createDropdown(
+    "matkulInput", "matkulDropdown",
+    `${API_BASE}/mata_kuliah_list.php`,
+    ["matkul", "nama", "nama_matkul"]
+  );
+
+  const ddDosen = createDropdown(
+    "dosenInput", "dosenDropdown",
+    `${API_BASE}/dosen_list.php`,
+    ["dosen", "nama", "nama_dosen"]
+  );
+
+  const ddRuangan = createDropdown(
+    "ruanganInput", "ruanganDropdown",
+    `${API_BASE}/ruangan_list.php`,
+    ["ruangan", "nama", "nama_ruangan"]
+  );
+
+  // ---------------- RESET FORM ----------------
+  function resetPopup() {
+    ["matkulInput","dosenInput","ruanganInput",
+     "jamMulaiInput","jamSelesaiInput",
+     "manualTimeInput","catatanInput"]
+      .forEach(id => document.getElementById(id).value = "");
+
+    ddMatkul.hide(); ddDosen.hide(); ddRuangan.hide();
+    if (activeDay) activeDay.classList.remove("active");
+  }
+
+  // ---------------- RENDER CALENDAR ----------------
+  function renderCalendar(date) {
+    calendarGrid.innerHTML = `
+      <div class="day-name">SUN</div><div class="day-name">MON</div>
+      <div class="day-name">TUE</div><div class="day-name">WED</div>
+      <div class="day-name">THU</div><div class="day-name">FRI</div>
+      <div class="day-name">SAT</div>`;
+
+    const y = date.getFullYear();
+    const m = date.getMonth();
+    const first = new Date(y, m, 1).getDay();
+    const total = new Date(y, m + 1, 0).getDate();
+
+    currentMonthYear.textContent =
+      date.toLocaleString('id-ID', { month: 'long' }) + " " + y;
+
+    for (let i = 0; i < first; i++)
+      calendarGrid.appendChild(document.createElement('div'));
+
+    for (let d = 1; d <= total; d++) {
+      const el = document.createElement('div');
+      el.className = 'calendar-day';
+      el.textContent = d;
+      el.onclick = async () => {
+        activeDateISO = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        activeDay?.classList.remove("active");
+        el.classList.add("active");
+        activeDay = el;
+
+        await Promise.all([ddMatkul.load(), ddDosen.load(), ddRuangan.load()]);
+        jadwalInputPopup.style.display = "flex";
+      };
+      calendarGrid.appendChild(el);
     }
+  }
 
-    // 3. Payload (Sesuaikan KEY ini dengan yang dibaca file PHP kamu!)
+  // ---------------- SUBMIT ----------------
+  kirimBtn.onclick = async () => {
     const payload = {
-        tanggal: activeDateISO,
-        matkul: inputs.matkul.value.trim(),
-        dosen: inputs.dosen.value.trim() || "-",
-        ruangan: inputs.ruangan.value.trim() || "-",
-        jam_mulai: finalMulai,
-        jam_selesai: finalSelesai || "-", // Jangan kirim kosong agar PHP gak error
-        catatan: inputs.catatan.value.trim() || "-"
+      tanggal: activeDateISO,
+      matkul: matkulInput.value.trim(),
+      dosen: dosenInput.value.trim() || "-",
+      ruangan: ruanganInput.value.trim() || "-",
+      jam_mulai: jamMulaiInput.value,
+      jam_selesai: jamSelesaiInput.value || "-",
+      catatan: catatanInput.value || "-"
     };
 
-    // 4. Validasi Dasar
-    if (!payload.tanggal || !payload.matkul || !payload.jam_mulai) {
-        alert("Wajib isi minimal Tanggal, Matkul, dan Jam Mulai!");
-        return;
+    if (!payload.tanggal || !payload.matkul || !payload.jam_mulai)
+      return alert("Tanggal, Matkul, dan Jam Mulai wajib!");
+
+    const res = await apiJSON(`${API_BASE}/jadwal_create.php`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    if (res.status === "success") {
+      alert("Jadwal tersimpan!");
+      location.reload();
+    } else alert(res.message || "Gagal");
+  };
+
+  batalBtn.onclick = () => {
+    jadwalInputPopup.style.display = "none";
+    resetPopup();
+  };
+
+  window.onclick = e => {
+    if (e.target === jadwalInputPopup) {
+      jadwalInputPopup.style.display = "none";
+      resetPopup();
     }
+  };
 
-    try {
-        const response = await fetch(`${API_BASE}/jadwal_create.php`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-
-        const rawText = await response.text();
-        console.log("Server Response:", rawText); // Intip ini di F12 jika gagal
-
-        const result = JSON.parse(rawText);
-        if (result.status === 'success' || result.status === 'ok') {
-            alert('Mantap! Jadwal tersimpan.');
-            location.reload();
-        } else {
-            alert('Gagal: ' + (result.message || 'Error tidak diketahui'));
-        }
-    } catch (e) {
-        console.error("Fetch Error:", e);
-        alert("Gagal memproses data. Cek tab Console (F12) untuk detail.");
-    }
-};
-    // --- Event Buttons ---
-    batalBtn.onclick = () => { 
-        jadwalInputPopup.style.display = 'none'; 
-        resetPopupForm();
-    };
-
-    window.onclick = (e) => {
-        if (e.target === jadwalInputPopup) {
-            jadwalInputPopup.style.display = 'none';
-            resetPopupForm();
-        }
-    };
-
-    // --- Init ---
-    renderCalendar(currentDate);
-    // loadHistoryFromDB(); // Aktifkan jika fungsi ini sudah ada
-    
-    prevMonth.onclick = () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(currentDate); };
-    nextMonth.onclick = () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(currentDate); };
+  renderCalendar(currentDate);
+  prevMonth.onclick = () => { currentDate.setMonth(currentDate.getMonth() - 1); renderCalendar(currentDate); };
+  nextMonth.onclick = () => { currentDate.setMonth(currentDate.getMonth() + 1); renderCalendar(currentDate); };
 });

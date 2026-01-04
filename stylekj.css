@@ -15,7 +15,7 @@
 
 body {
   margin: 0;
-  padding-top: 80px; /* jarak supaya hero gak ketiban navbar */
+  padding-top: 80px;
   overflow-x: hidden;
 }
 
@@ -27,13 +27,12 @@ body, html {
 
 body > header.navbar {
   position: fixed !important;
-  padding: 0% !important ;
+  padding: 0% !important;
   top: 0;
   left: 0;
   width: 100%;
   z-index: 9999;
 }
-
 
 /* Navbar */
 .navbar {
@@ -47,7 +46,7 @@ body > header.navbar {
   width: 100%;
   top: 0;
   left: 0;
-  z-index: 100000; /* naikin z-index-nya */
+  z-index: 100000;
 }
 
 .nav-left {
@@ -151,7 +150,6 @@ body > header.navbar {
 
 .nav-right i:hover {
   color: #FF762F;
-  /* warna oranye */
   transform: scale(1.1);
 }
 
@@ -164,14 +162,14 @@ body > header.navbar {
 /* POPUP MENU & USER */
 .popup-menu {
   position: fixed;
-  top: 70px; /* turun dikit biar gak nempel navbar */
+  top: 70px;
   right: 70px;
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   display: none;
   overflow: hidden;
-  z-index: 9999; /* pastiin di bawah navbar */
+  z-index: 9999;
 }
 
 .popup-user {
@@ -208,13 +206,12 @@ body > header.navbar {
   color: #fff;
 }
 
-
 /* OVERLAY POPUP UBAH SANDI */
 .modal {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6); /* gelap */
-  backdrop-filter: blur(3px);     /* blur halamannya */
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(3px);
   display: none;
   justify-content: center;
   align-items: center;
@@ -313,13 +310,11 @@ body > header.navbar {
 }
 .close:hover { color: #000; }
 
-
-
-/*---Layout Utama --- */
+/* Layout Utama */
 .container {
-    max-width: 900px;     /* biar ukurannya pas di tengah, nggak lebar banget */
-    margin: 135px 40px 70px 40px;    /* biar center */
-    background-color: #fff; 
+    max-width: 900px;
+    margin: 135px 40px 70px 40px;
+    background-color: #fff;
     border-radius: 12px;
     padding: 40px 40px 50px 40px !important;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -344,7 +339,7 @@ h1, p {
     padding: 30px;
 }
 
-/* --- Calendar Styling --- */
+/* Calendar Styling */
 .calendar {
   background: #f9f9f9;
   padding: 20px;
@@ -406,11 +401,11 @@ h1, p {
 }
 
 .calendar-day {
-  position: relative; /* penting biar ::after bisa di-posisi-in relatif ke tanggal */
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 50px; /* biar kotak tanggal konsisten */
+  height: 50px;
   border-radius: 10px;
   cursor: pointer;
   transition: 0.2s ease;
@@ -430,18 +425,17 @@ h1, p {
   background-color: #0d6efd;
   border-radius: 50%;
   position: absolute;
-  bottom: 8px; /* posisikan di bawah angka, tapi masih di dalam kotak */
+  bottom: 8px;
   left: 50%;
   transform: translateX(-50%);
 }
 
 .calendar-day.has-schedule {
   position: relative;
-  color: rgb(0, 0, 0); /* biar angka kontras sama warna background */
+  color: rgb(0, 0, 0);
   font-weight: 600;
   z-index: 1;
 }
-
 
 .react-calendar__tile {
   position: relative;
@@ -450,7 +444,7 @@ h1, p {
 
 .react-calendar__tile--hasActiveJadwal abbr {
   position: relative;
-  z-index: 2; /* angka tetap di atas */
+  z-index: 2;
 }
 
 .react-calendar__tile--hasActiveJadwal::before {
@@ -460,12 +454,12 @@ h1, p {
   left: 4px;
   right: 4px;
   bottom: 4px;
-  background-color: rgba(255, 99, 132, 0.25); /* warna dot di belakang angka */
+  background-color: rgba(255, 99, 132, 0.25);
   border-radius: 50%;
   z-index: 1;
 }
 
-/* --- Notes Table --- */
+/* Notes Table */
 .student-notes h4 {
     font-size: 1.1em;
     color: var(--primary-blue);
@@ -503,7 +497,7 @@ h1, p {
     word-wrap: break-word;
     white-space: pre-wrap;
     overflow-wrap: break-word;
-    max-width: 177.5px;  /* kamu bisa atur ukurannya */
+    max-width: 177.5px;
 }
 
 .notes-col:last-child {
@@ -519,22 +513,21 @@ h1, p {
   transform: scale(1.1);
 }
 
-
-/* --- Overlay Luar --- */
+/* Overlay Luar */
 .modal-overlay {
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
     background: rgba(0, 0, 0, 0.75);
     backdrop-filter: blur(5px);
-    display: none; /* Muncul lewat JS: flex */
+    display: none;
     justify-content: center;
     align-items: center;
     z-index: 99999;
     padding: 20px;
 }
 
-/* --- Box Utama (Split Layout) --- */
+/* Box Utama (Split Layout) */
 .modal-content {
     background: #ffffff !important;
     width: 100%;
@@ -547,11 +540,11 @@ h1, p {
 
 .modal-body-split {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Bagi dua kolom presisi */
+    grid-template-columns: 1fr 1fr;
     min-height: 450px;
 }
 
-/* --- Kolom Kiri --- */
+/* Kolom Kiri */
 .side-left {
     padding: 40px;
     background: #ffffff;
@@ -570,7 +563,7 @@ h1, p {
     margin-bottom: 30px;
 }
 
-/* --- Kolom Kanan --- */
+/* Kolom Kanan */
 .side-right {
     padding: 40px;
     background: #f8fafc;
@@ -579,7 +572,7 @@ h1, p {
     flex-direction: column;
 }
 
-/* --- Input Styling (Gak bakal tumpang tindih) --- */
+/* Input Styling */
 .input-group {
     margin-bottom: 22px;
     display: flex;
@@ -607,12 +600,57 @@ h1, p {
 }
 
 .input-group input:focus {
-    border-color: #fbbf24; /* Warna kuning fokus */
+    border-color: #fbbf24;
     outline: none;
     box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.1);
 }
 
-/* --- Area Waktu (Row) --- */
+/* ======================================================
+   CUSTOM DROPDOWN (Matkul / Dosen / Ruangan)
+   ====================================================== */
+.input-group.dd { position: relative; }
+
+.dd-menu{
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 8px);
+  background: #111827;              /* dark seperti screenshot */
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  box-shadow: 0 14px 35px rgba(0,0,0,.35);
+  display: none;
+  z-index: 1000000;
+  padding: 6px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.dd-item{
+  padding: 12px 12px;
+  border-radius: 10px;
+  color: #F9FAFB;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.dd-item:hover,
+.dd-item.active{
+  background: rgba(255,255,255,.10);
+}
+
+/* scrollbar kecil biar cakep */
+.dd-menu::-webkit-scrollbar { width: 8px; }
+.dd-menu::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.18);
+  border-radius: 10px;
+}
+.dd-menu::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Area Waktu */
 .waktu-row {
     display: flex;
     gap: 12px;
@@ -637,9 +675,9 @@ h1, p {
     position: relative;
 }
 
-/* --- Footer Tombol (Fixed di Bawah Kanan) --- */
+/* Footer Tombol */
 .modal-footer {
-    margin-top: auto; /* Paksa ke paling bawah */
+    margin-top: auto;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 12px;
@@ -658,7 +696,7 @@ h1, p {
 }
 
 .btn-primary {
-    background: #fbbf24; /* Kuning cerah */
+    background: #fbbf24;
     color: #000;
     box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
 }
@@ -680,16 +718,13 @@ h1, p {
     to { transform: translateY(0); opacity: 1; }
 }
 
-/* --- Inline Editing Styles --- */
-
-/* Gaya saat elemen di halaman utama fokus (Catatan di bawah Kalender) */
+/* Inline Editing Styles */
 .student-notes .notes-table .notes-col[contenteditable="true"]:focus {
     background-color: #FFFFE0; 
     outline: 1px solid var(--primary-blue);
     cursor: text;
 }
 
-/* Tombol Simpan Catatan di Halaman Utama */
 .main-save-action {
     text-align: right;
     margin-top: 15px;
@@ -706,14 +741,12 @@ h1, p {
     transition: background-color 0.2s;
 }
 
-/* Gaya saat elemen di dalam pop-up fokus (Gambar 4) */
 .popup-overlay .notes-table .notes-col[contenteditable="true"]:focus {
     background-color: #FFFFAA; 
     outline: 2px solid var(--primary-blue);
     cursor: text;
 }
 
-/* Tombol Aksi di Pop-up Catatan Mahasiswa (Gambar 4) */
 .edit-actions {
     display: flex;
     justify-content: center;
@@ -753,6 +786,7 @@ h1, p {
     font-weight: 600;
 }
 
+/* Footer */
 .footer {
   background-color: #0E2A66;
   font-family: Arial, sans-serif;
