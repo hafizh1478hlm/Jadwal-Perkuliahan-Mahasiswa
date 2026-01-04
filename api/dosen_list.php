@@ -3,12 +3,13 @@ include 'db.php';
 
 $q = mysqli_query($conn, "SELECT DISTINCT dosen FROM jd_utama ORDER BY dosen");
 
-$data = [];
+$out = [];
 while ($r = mysqli_fetch_assoc($q)) {
-  $data[] = [
+  $out[] = [
     "id" => $r["dosen"],
     "nama" => $r["dosen"]
   ];
 }
 
-echo json_encode($data);
+header('Content-Type: application/json');
+echo json_encode($out);

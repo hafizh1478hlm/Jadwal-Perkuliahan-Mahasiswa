@@ -80,7 +80,7 @@
     <div class="container">
         <h1>Kelola Jadwal</h1>
         <p>
-            Pilih tanggal pada kalender untuk menambahkan, mengubah, atau menghapus jadwal dan catatan sesuai
+            Klik tanggal pada kalender untuk menambahkan, mengubah, atau menghapus jadwal dan catatan sesuai
             kebutuhanmu.
         </p>
 
@@ -121,33 +121,66 @@
     </div>
 
     <!-- POPUP INPUT JADWAL -->
-    <div class="popup-overlay" id="jadwalInputPopup">
-        <div class="popup-content">
-            <h3>Masukkan Jadwal Kuliah</h3>
-            <select id="mataKuliahSelect">
-                <option value="" disabled selected>Pilih Mata Kuliah</option>
-            </select>
+<div id="jadwalInputPopup" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-body-split">
+            
+            <div class="side-left">
+                <div class="modal-header-simple">
+                    <h3>Kelola Jadwal</h3>
+                    <p class="subtitle">Input detail perkuliahanmu disini.</p>
+                </div>
 
-            <select id="dosenSelect">
-                <option value="" disabled selected>Pilih Dosen</option>
-            </select>
+                <div class="input-group">
+                    <label>Mata Kuliah</label>
+                    <input type="text" id="matkulInput" list="matkulList" placeholder="Pilih Matkul">
+                    <datalist id="matkulList"></datalist>
+                </div>
 
-            <select id="ruanganSelect">
-                <option value="" disabled selected>Pilih Ruangan</option>
-            </select>
+                <div class="input-group">
+                    <label>Dosen</label>
+                    <input type="text" id="dosenInput" list="dosenList" placeholder="Nama Dosen">
+                    <datalist id="dosenList"></datalist>
+                </div>
 
-            <select id="waktuSelect">
-                <option value="" disabled selected>Pilih Waktu</option>
-            </select>
-
-            <input type="text" id="catatanInput" placeholder="Catatan tambahan..." />
-
-            <div class="button-group">
-                <button id="kirimJadwal">KIRIM</button>
-                <button id="batalJadwal">BATAL</button>
+                <div class="input-group">
+                    <label>Ruangan</label>
+                    <input type="text" id="ruanganInput" list="ruanganList" placeholder="Contoh: TA 10.4">
+                    <datalist id="ruanganList"></datalist>
+                </div>
             </div>
+
+            <div class="side-right">
+                <div class="input-group">
+                    <label>Waktu Perkuliahan</label>
+                    <div class="waktu-row">
+                        <div class="waktu-box">
+                            <small>MULAI</small>
+                            <input type="time" id="jamMulaiInput">
+                        </div>
+                        <div class="waktu-box">
+                            <small>SELESAI</small>
+                            <input type="time" id="jamSelesaiInput">
+                        </div>
+                    </div>
+                    <div class="divider-text">ATAU MANUAL</div>
+                    <input type="text" id="manualTimeInput" placeholder="Contoh: 07:30 - 09:00">
+                </div>
+
+                <div class="input-group">
+                    <label>Catatan Tambahan</label>
+                    <input type="text" id="catatanInput" placeholder="Kuis, Tugas, dll...">
+                </div>
+
+                <div class="modal-footer">
+                    <button id="batalJadwal" class="btn-secondary">BATAL</button>
+                    <button id="kirimJadwal" class="btn-primary">KIRIM</button>
+                </div>
+            </div>
+
         </div>
     </div>
+</div>
 
     <!-- Footer -->
     <footer class="footer">
@@ -166,3 +199,43 @@
 
 
 </html>
+
+
+<?php
+header("Content-Type: application/json");
+include 'koneksi.php'; // Ganti dengan nama file koneksi kamu
+
+// Ambil input JSON
+$json = file_get_contents("php://input");
+$data = json_decode($json, true);
+
+if (!$data) {
+    echo json_encode(["status" => "error", "message" => "Format JSON tidak valid"]);
+    exit;
+}
+
+// Ambil variabel
+$tanggal     = $data['tanggal'] ?? '';
+$matkul      = $data['matkul'] ?? '';
+$dosen       = $data['dosen'] ?? '-';
+$ruangan     = $data['ruangan'] ?? '-';
+$jam_mulai   = $data['jam_mulai'] ?? '';
+$jam_selesai = $data['jam_selesai'] ?? '-';
+$catatan     = $data['catatan'] ?? '-';
+
+// Cek Minimal Input
+if (empty($tanggal) || empty($matkul) || empty($jam_mulai)) {
+    echo json_encode(["status" => "error", "message" => "Field belum lengkap (Mata Kuliah & Jam Mulai wajib)"]);
+    exit;
+}
+
+// Query (Pastikan nama kolom di DB kamu SAMA dengan di bawah)
+$query = "INSERT INTO jd_utama (tanggal, matkul, dosen, ruangan, jam_mulai, jam_selesai, catatan) 
+          VALUES ('$tanggal', '$matkul', '$dosen', '$ruangan', '$jam_mulai', '$jam_selesai', '$catatan')";
+
+if (mysqli_query($koneksi, $query)) {
+    echo json_encode(["status" => "success", "message" => "Data berhasil disimpan"]);
+} else {
+    echo json_encode(["status" => "error", "message" => "Database Error: " . mysqli_error($koneksi)]);
+}
+?>
