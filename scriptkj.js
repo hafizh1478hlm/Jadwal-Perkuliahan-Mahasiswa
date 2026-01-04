@@ -1,23 +1,20 @@
 // ================================
-// scriptkj.js (FIXED VERSION)
+// scriptkj.js (FINAL: POPUP FIX)
 // ================================
 document.addEventListener('DOMContentLoaded', () => {
   const API_BASE = './api';
   const byId = (id) => document.getElementById(id);
 
-  const calendarGrid = byId('calendarGrid') || document.querySelector('.calendar-grid');
+  const calendarGrid = byId('calendarGrid');
   const currentMonthYear = byId('currentMonthYear');
   const prevMonth = byId('prevMonth');
   const nextMonth = byId('nextMonth');
 
   const jadwalInputPopup = byId('jadwalInputPopup');
-  const kirimBtn = byId('kirimJadwal');
   const batalBtn = byId('batalJadwal');
+  const kirimBtn = byId('kirimJadwal');
 
-  if (!calendarGrid || !currentMonthYear || !prevMonth || !nextMonth) {
-    console.error('Elemen kalender tidak ditemukan. Halaman/DOM tidak cocok.');
-    return;
-  }
+  if (!calendarGrid || !currentMonthYear || !prevMonth || !nextMonth || !jadwalInputPopup) return;
 
   let currentDate = new Date();
   let activeDay = null;
@@ -28,8 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const text = await res.text();
     try {
       return JSON.parse(text);
-    } catch (e) {
-      console.error('Respon bukan JSON:', url, text);
+    } catch (_) {
       return null;
     }
   }
@@ -45,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
       listEl.innerHTML = '';
       for (const x of data) {
         const opt = document.createElement('option');
-        opt.value = (x && x.nama) ? x.nama : '';
+        opt.value = (x && (x.nama || x.matkul || x.dosen || x.ruangan)) || '';
         listEl.appendChild(opt);
       }
     };
@@ -65,13 +61,20 @@ document.addEventListener('DOMContentLoaded', () => {
       'manualTimeInput',
       'catatanInput',
     ];
-
     for (const id of ids) {
       const el = byId(id);
       if (el) el.value = '';
     }
-
     if (activeDay) activeDay.classList.remove('active');
+  }
+
+  function openPopup() {
+    jadwalInputPopup.classList.add('show'); // ✅ ini yang bikin pasti muncul
+  }
+
+  function closePopup() {
+    jadwalInputPopup.classList.remove('show');
+    resetPopupForm();
   }
 
   function renderCalendar(date) {
@@ -100,39 +103,41 @@ document.addEventListener('DOMContentLoaded', () => {
       d.className = 'calendar-day';
       d.textContent = day;
 
-      d.onclick = async () => {
+      d.addEventListener('click', async () => {
         if (activeDay) activeDay.classList.remove('active');
         d.classList.add('active');
         activeDay = d;
 
         activeDateISO = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 
-        if (jadwalInputPopup) jadwalInputPopup.style.display = 'flex';
+        openPopup();
         await loadDropdownsFromDB();
-      };
+      });
 
       calendarGrid.appendChild(d);
     }
   }
 
-  if (batalBtn && jadwalInputPopup) {
-    batalBtn.onclick = () => {
-      jadwalInputPopup.style.display = 'none';
-      resetPopupForm();
-    };
-  }
+  // close kalau klik overlay luar
+  window.addEventListener('click', (e) => {
+    if (e.target === jadwalInputPopup) closePopup();
+  });
 
-  if (jadwalInputPopup) {
-    window.addEventListener('click', (e) => {
-      if (e.target === jadwalInputPopup) {
-        jadwalInputPopup.style.display = 'none';
-        resetPopupForm();
-      }
-    });
-  }
+  if (batalBtn) batalBtn.addEventListener('click', closePopup);
 
+  prevMonth.addEventListener('click', () => {
+    currentDate.setMonth(currentDate.getMonth() - 1);
+    renderCalendar(currentDate);
+  });
+
+  nextMonth.addEventListener('click', () => {
+    currentDate.setMonth(currentDate.getMonth() + 1);
+    renderCalendar(currentDate);
+  });
+
+  // KIRIM (tetap sesuai versi lu)
   if (kirimBtn) {
-    kirimBtn.onclick = async () => {
+    kirimBtn.addEventListener('click', async () => {
       const matkul = (byId('matkulInput')?.value || '').trim();
       const dosen = (byId('dosenInput')?.value || '').trim() || '-';
       const ruangan = (byId('ruanganInput')?.value || '').trim() || '-';
@@ -184,21 +189,10 @@ document.addEventListener('DOMContentLoaded', () => {
           alert('Gagal: ' + (result?.message || raw || 'Error tidak diketahui'));
         }
       } catch (e) {
-        console.error(e);
         alert('Gagal memproses data.');
       }
-    };
+    });
   }
-
-  prevMonth.onclick = () => {
-    currentDate.setMonth(currentDate.getMonth() - 1);
-    renderCalendar(currentDate);
-  };
-
-  nextMonth.onclick = () => {
-    currentDate.setMonth(currentDate.getMonth() + 1);
-    renderCalendar(currentDate);
-  };
 
   renderCalendar(currentDate);
 });

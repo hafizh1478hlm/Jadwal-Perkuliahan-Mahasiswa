@@ -806,3 +806,46 @@ h1, p {
 
   box-shadow: 0 25px 50px rgba(0,0,0,0.4) !important;
 }
+
+/* overlay popup jadwal */
+#jadwalInputPopup.modal-overlay{
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+
+  /* default hidden */
+  display: none !important;
+
+  justify-content: center !important;
+  align-items: center !important;
+
+  background: rgba(0,0,0,0.75) !important;
+  backdrop-filter: blur(5px) !important;
+
+  z-index: 999999 !important;
+  padding: 20px !important;
+}
+
+/* saat dibuka lewat JS */
+#jadwalInputPopup.modal-overlay.show{
+  display: flex !important;
+}
+
+/* konten popup harus center */
+#jadwalInputPopup .modal-content{
+  width: 100% !important;
+  max-width: 850px !important;
+  margin: 0 auto !important;
+
+  background: #fff !important;
+  border-radius: 10px !important;
+  overflow: hidden !important;
+
+  position: relative !important;
+}
+
+/* kalau ada .modal (ubah sandi) jangan ganggu popup jadwal */
+.modal#changePasswordModal{
+  z-index: 9999 !important;
+}
