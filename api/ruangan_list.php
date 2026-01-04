@@ -1,9 +1,22 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
+
 require_once '../koneksi.php';
 
-$q = mysqli_query($koneksi, "SELECT ruangan FROM ruangan ORDER BY ruangan ASC");
+if (!isset($koneksi)) {
+    echo json_encode([]);
+    exit;
+}
+
+$sql = "SELECT ruangan FROM ruangan ORDER BY ruangan ASC";
+$query = mysqli_query($koneksi, $sql);
+
 $data = [];
-while ($r = mysqli_fetch_assoc($q)) $data[] = $r;
+
+if ($query) {
+    while ($row = mysqli_fetch_assoc($query)) {
+        $data[] = $row;
+    }
+}
 
 echo json_encode($data);

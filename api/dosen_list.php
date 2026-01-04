@@ -1,9 +1,22 @@
-=<?php
+<?php
 header('Content-Type: application/json; charset=utf-8');
+
 require_once '../koneksi.php';
 
-$q = mysqli_query($koneksi, "SELECT dosen FROM dosen ORDER BY dosen ASC");
+if (!isset($koneksi)) {
+    echo json_encode([]);
+    exit;
+}
+
+$sql = "SELECT dosen FROM dosen ORDER BY dosen ASC";
+$query = mysqli_query($koneksi, $sql);
+
 $data = [];
-while ($r = mysqli_fetch_assoc($q)) $data[] = $r;
+
+if ($query) {
+    while ($row = mysqli_fetch_assoc($query)) {
+        $data[] = $row;
+    }
+}
 
 echo json_encode($data);
