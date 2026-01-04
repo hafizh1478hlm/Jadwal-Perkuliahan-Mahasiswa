@@ -1,12 +1,15 @@
 <?php
-header('Content-Type: application/json; charset=utf-8');
-require_once '../koneksi.php';
-if (!isset($koneksi) && isset($conn)) $koneksi = $conn;
-if (!isset($koneksi)) { echo json_encode([]); exit; }
+include 'db.php';
 
-$kolom = "dosen";
-$q = mysqli_query($koneksi, "SELECT `$kolom` AS dosen FROM dosen ORDER BY `$kolom` ASC");
+$q = mysqli_query($conn, "SELECT DISTINCT dosen FROM jd_utama ORDER BY dosen");
 
-$data = [];
-if ($q) while ($r = mysqli_fetch_assoc($q)) $data[] = $r;
-echo json_encode($data);
+$out = [];
+while ($r = mysqli_fetch_assoc($q)) {
+  $out[] = [
+    "id" => $r["dosen"],
+    "nama" => $r["dosen"]
+  ];
+}
+
+header('Content-Type: application/json');
+echo json_encode($out);
