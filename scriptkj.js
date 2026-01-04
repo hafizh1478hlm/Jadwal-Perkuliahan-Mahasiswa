@@ -263,7 +263,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
       selectEl.innerHTML =
         `<option value="" disabled selected>${placeholder}</option>` +
-        data.map(x => `<option value="${x.id}">${x.nama}</option>`).join('');
+        data.map(x => {
+          const id = x.id ?? x.matkul ?? x.dosen;
+          const nama = x.nama ?? x.matkul ?? x.dosen;
+          return `<option value="${id}">${nama}</option>`;
+        }).join('');
     };
 
     await fill(selMatkul, `${API_BASE}/mata_kuliah_list.php`, 'Pilih Mata Kuliah');
