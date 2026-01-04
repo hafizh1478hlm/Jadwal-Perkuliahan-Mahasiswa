@@ -131,22 +131,22 @@
                     <p class="subtitle">Input detail perkuliahanmu disini.</p>
                 </div>
 
-                <div class="input-group dd">
+                <div class="input-group">
                     <label>Mata Kuliah</label>
-                    <input type="text" id="matkulInput" list="matkulList" placeholder="Pilih Matkul" autocomplete="off">
-                    <div id="matkulDropdown" class="dd-menu"></div>
+                    <input type="text" id="matkulInput" list="matkulList" placeholder="Pilih Matkul">
+                    <datalist id="matkulList"></datalist>
                 </div>
 
-                <div class="input-group dd">
+                <div class="input-group">
                     <label>Dosen</label>
                     <input type="text" id="dosenInput" list="dosenList" placeholder="Nama Dosen">
-                    <div id="dosenDropdown" class="dd-menu"></div>
+                    <datalist id="dosenList"></datalist>
                 </div>
 
-                <div class="input-group dd"> 
+                <div class="input-group">
                     <label>Ruangan</label>
                     <input type="text" id="ruanganInput" list="ruanganList" placeholder="Contoh: TA 10.4">
-                    <div id="ruanganDropdown" class="dd-menu"></div>
+                    <datalist id="ruanganList"></datalist>
                 </div>
             </div>
 
@@ -199,3 +199,43 @@
 
 
 </html>
+
+
+<?php
+header("Content-Type: application/json");
+include 'koneksi.php'; // Ganti dengan nama file koneksi kamu
+
+// Ambil input JSON
+$json = file_get_contents("php://input");
+$data = json_decode($json, true);
+
+if (!$data) {
+    echo json_encode(["status" => "error", "message" => "Format JSON tidak valid"]);
+    exit;
+}
+
+// Ambil variabel
+$tanggal     = $data['tanggal'] ?? '';
+$matkul      = $data['matkul'] ?? '';
+$dosen       = $data['dosen'] ?? '-';
+$ruangan     = $data['ruangan'] ?? '-';
+$jam_mulai   = $data['jam_mulai'] ?? '';
+$jam_selesai = $data['jam_selesai'] ?? '-';
+$catatan     = $data['catatan'] ?? '-';
+
+// Cek Minimal Input
+if (empty($tanggal) || empty($matkul) || empty($jam_mulai)) {
+    echo json_encode(["status" => "error", "message" => "Field belum lengkap (Mata Kuliah & Jam Mulai wajib)"]);
+    exit;
+}
+
+// Query (Pastikan nama kolom di DB kamu SAMA dengan di bawah)
+$query = "INSERT INTO jd_utama (tanggal, matkul, dosen, ruangan, jam_mulai, jam_selesai, catatan) 
+          VALUES ('$tanggal', '$matkul', '$dosen', '$ruangan', '$jam_mulai', '$jam_selesai', '$catatan')";
+
+if (mysqli_query($koneksi, $query)) {
+    echo json_encode(["status" => "success", "message" => "Data berhasil disimpan"]);
+} else {
+    echo json_encode(["status" => "error", "message" => "Database Error: " . mysqli_error($koneksi)]);
+}
+?>
