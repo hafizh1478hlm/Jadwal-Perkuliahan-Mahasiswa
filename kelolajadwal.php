@@ -229,5 +229,36 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const menuIcon = document.querySelector('.menu-icon');
+  const userIcon = document.querySelector('.user-icon');
+  const menuPopup = document.getElementById('menuPopup');
+  const userPopup = document.getElementById('userPopup');
+
+  // toggle menu
+  menuIcon.addEventListener('click', (e) => {
+    e.stopPropagation();
+    menuPopup.style.display =
+      menuPopup.style.display === 'block' ? 'none' : 'block';
+    userPopup.style.display = 'none';
+  });
+
+  // toggle user
+  userIcon.addEventListener('click', (e) => {
+    e.stopPropagation();
+    userPopup.style.display =
+      userPopup.style.display === 'block' ? 'none' : 'block';
+    menuPopup.style.display = 'none';
+  });
+
+  // klik luar -> tutup semua
+  document.addEventListener('click', () => {
+    menuPopup.style.display = 'none';
+    userPopup.style.display = 'none';
+  });
+});
+</script>
+
 </body>
 </html>
