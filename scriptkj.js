@@ -33,33 +33,37 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- Dropdowns Datalist: ambil langsung dari tabel masing-masing (id, nama) ---
   async function loadDropdownsFromDB() {
     const fillDatalist = async (listId, url) => {
-      try {
-        const data = await apiJSON(url);
         const listEl = document.getElementById(listId);
-        if (!listEl) return;
 
-        if (Array.isArray(data)) {
-          // Karena API kamu output {id, nama}
-          listEl.innerHTML = data
-            .map((x) => {
-              const val = (x && x.nama) ? x.nama : '';
-              return `<option value="${val}"></option>`;
-            })
-            .join('');
-        } else {
-          console.warn(`Data ${listId} bukan array:`, data);
+        if (!listEl) {
+            console.error(`[DATALIST MISSING] id="${listId}" tidak ada di HTML. Cek kelolajadwal.php`);
+            throw new Error(`Datalist "${listId}" tidak ditemukan`);
         }
-      } catch (err) {
-        console.error(`Gagal load ${listId}:`, err);
-      }
+
+        const data = await apiJSON(url);
+
+        if (!Array.isArray(data)) {
+            console.error(`[BAD DATA] ${url} tidak mengembalikan array:`, data);
+            throw new Error(`Response ${url} bukan array`);
+        }
+
+        listEl.innerHTML = data
+            .map((x) => `<option value="${(x && x.nama) ? x.nama : ''}"></option>`)
+            .join('');
     };
 
-    await Promise.all([
-      fillDatalist('matkulList', `${API_BASE}/mata_kuliah_list.php`),
-      fillDatalist('dosenList', `${API_BASE}/dosen_list.php`),
-      fillDatalist('ruanganList', `${API_BASE}/ruangan_list.php`),
-    ]);
-  }
+    try {
+        await Promise.all([
+            fillDatalist('matkulList', `${API_BASE}/mata_kuliah_list.php`),
+            fillDatalist('dosenList', `${API_BASE}/dosen_list.php`),
+            fillDatalist('ruanganList', `${API_BASE}/ruangan_list.php`),
+        ]);
+    } catch (e) {
+    alert('Gagal load dropdown: ' + e.message);
+    console.error(e);
+    }
+}
+
 
   // --- Reset Form ---
   function resetPopupForm() {
