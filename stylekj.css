@@ -535,7 +535,7 @@ h1, p {
 }
 
 /* --- Box Utama (Split Layout) --- */
-.modal-content {
+.modal-overlay .modal-content {
     background: #ffffff !important;
     width: 100%;
     max-width: 850px;
@@ -544,6 +544,7 @@ h1, p {
     overflow: hidden;
     animation: modalSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
+
 
 .modal-body-split {
     display: grid;

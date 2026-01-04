@@ -1,9 +1,8 @@
 // ================================
-// scriptkj.js (NO CRASH VERSION)
+// scriptkj.js (NO CRASH VERSION + FORCE POPUP)
 // ================================
 document.addEventListener('DOMContentLoaded', () => {
   const API_BASE = './api';
-
   const byId = (id) => document.getElementById(id);
 
   const calendarGrid = byId('calendarGrid') || document.querySelector('.calendar-grid');
@@ -17,7 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Kalau elemen inti kalender gak ada, stop (biar gak error)
   if (!calendarGrid || !currentMonthYear || !prevMonth || !nextMonth) {
-    // Jangan ganggu demo, cuma stop script.
     console.error('Elemen kalender tidak ditemukan. Halaman/DOM tidak cocok.');
     return;
   }
@@ -33,20 +31,19 @@ document.addEventListener('DOMContentLoaded', () => {
       return JSON.parse(text);
     } catch (e) {
       console.error('Respon bukan JSON:', url, text);
-      return null; // ✅ penting: jangan throw
+      return null; // jangan throw
     }
   }
 
-  // ✅ NO CRASH: kalau listEl null -> return
+  // Load dropdown: NO CRASH
   async function loadDropdownsFromDB() {
     const fillDatalist = async (listId, url) => {
       const listEl = byId(listId);
-      if (!listEl) return; // ✅ stop diam-diam (tidak crash)
+      if (!listEl) return;
 
       const data = await apiJSON(url);
       if (!Array.isArray(data)) return;
 
-      // ✅ aman: reset & append option
       listEl.innerHTML = '';
       for (const x of data) {
         const opt = document.createElement('option');
@@ -70,15 +67,16 @@ document.addEventListener('DOMContentLoaded', () => {
       'manualTimeInput',
       'catatanInput',
     ];
+
     for (const id of ids) {
       const el = byId(id);
       if (el) el.value = '';
     }
+
     if (activeDay) activeDay.classList.remove('active');
   }
 
   function renderCalendar(date) {
-    // Header hari
     calendarGrid.innerHTML = `
       <div class="day-name">SUN</div><div class="day-name">MON</div>
       <div class="day-name">TUE</div><div class="day-name">WED</div>
@@ -111,10 +109,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         activeDateISO = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 
-        // ✅ tampilkan popup dulu (biar elemen di dalamnya pasti ada)
+        // tampilkan popup dulu
         if (jadwalInputPopup) jadwalInputPopup.style.display = 'flex';
 
-        // ✅ load dropdown TANPA CRASH
+        // load dropdown tanpa crash
         await loadDropdownsFromDB();
       };
 
@@ -213,4 +211,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Init
   renderCalendar(currentDate);
+
+  // ===== FORCE POPUP SHOW (PAKSA MUNCUL) =====
+  function forceShowPopup() {
+    const pop = document.getElementById('jadwalInputPopup');
+    if (!pop) {
+      alert('ERROR: elemen #jadwalInputPopup tidak ada di kelolajadwal.php');
+      return;
+    }
+
+    pop.style.display = 'flex';
+    pop.style.position = 'fixed';
+    pop.style.inset = '0';
+    pop.style.zIndex = '99999';
+  }
+
+  // Listener global: klik tanggal => paksa popup muncul
+  document.addEventListener('click', (e) => {
+    const day = e.target.closest('.calendar-day');
+    if (!day || day.classList.contains('empty')) return;
+    if (day.classList.contains('day-name')) return;
+
+    forceShowPopup();
+  });
 });
