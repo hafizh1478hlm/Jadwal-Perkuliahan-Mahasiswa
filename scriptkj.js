@@ -1,5 +1,5 @@
 // ================================
-// scriptkj.js (NO CRASH VERSION + FORCE POPUP)
+// scriptkj.js (FIXED VERSION)
 // ================================
 document.addEventListener('DOMContentLoaded', () => {
   const API_BASE = './api';
@@ -14,7 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const kirimBtn = byId('kirimJadwal');
   const batalBtn = byId('batalJadwal');
 
-  // Kalau elemen inti kalender gak ada, stop (biar gak error)
   if (!calendarGrid || !currentMonthYear || !prevMonth || !nextMonth) {
     console.error('Elemen kalender tidak ditemukan. Halaman/DOM tidak cocok.');
     return;
@@ -31,11 +30,10 @@ document.addEventListener('DOMContentLoaded', () => {
       return JSON.parse(text);
     } catch (e) {
       console.error('Respon bukan JSON:', url, text);
-      return null; // jangan throw
+      return null;
     }
   }
 
-  // Load dropdown: NO CRASH
   async function loadDropdownsFromDB() {
     const fillDatalist = async (listId, url) => {
       const listEl = byId(listId);
@@ -109,10 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         activeDateISO = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 
-        // tampilkan popup dulu
         if (jadwalInputPopup) jadwalInputPopup.style.display = 'flex';
-
-        // load dropdown tanpa crash
         await loadDropdownsFromDB();
       };
 
@@ -120,7 +115,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Tombol batal popup
   if (batalBtn && jadwalInputPopup) {
     batalBtn.onclick = () => {
       jadwalInputPopup.style.display = 'none';
@@ -128,7 +122,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // Klik luar popup
   if (jadwalInputPopup) {
     window.addEventListener('click', (e) => {
       if (e.target === jadwalInputPopup) {
@@ -138,7 +131,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Tombol kirim
   if (kirimBtn) {
     kirimBtn.onclick = async () => {
       const matkul = (byId('matkulInput')?.value || '').trim();
@@ -198,7 +190,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
-  // Navigasi bulan
   prevMonth.onclick = () => {
     currentDate.setMonth(currentDate.getMonth() - 1);
     renderCalendar(currentDate);
@@ -209,29 +200,5 @@ document.addEventListener('DOMContentLoaded', () => {
     renderCalendar(currentDate);
   };
 
-  // Init
   renderCalendar(currentDate);
-
-  // ===== FORCE POPUP SHOW (PAKSA MUNCUL) =====
-  function forceShowPopup() {
-    const pop = document.getElementById('jadwalInputPopup');
-    if (!pop) {
-      alert('ERROR: elemen #jadwalInputPopup tidak ada di kelolajadwal.php');
-      return;
-    }
-
-    pop.style.display = 'flex';
-    pop.style.position = 'fixed';
-    pop.style.inset = '0';
-    pop.style.zIndex = '99999';
-  }
-
-  // Listener global: klik tanggal => paksa popup muncul
-  document.addEventListener('click', (e) => {
-    const day = e.target.closest('.calendar-day');
-    if (!day || day.classList.contains('empty')) return;
-    if (day.classList.contains('day-name')) return;
-
-    forceShowPopup();
-  });
 });

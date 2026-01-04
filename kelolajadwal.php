@@ -122,9 +122,9 @@
     </div>
   </div>
 
-  <!-- POPUP INPUT JADWAL -->
-  <div id="jadwalInputPopup" class="modal-overlay" style="display:none;">
-    <div class="modal-content">
+  <!-- POPUP INPUT JADWAL (FIX: class dipisah biar gak bentrok) -->
+  <div id="jadwalInputPopup" class="modal-overlay jadwal-overlay" style="display:none;">
+    <div class="jadwal-content">
       <div class="modal-body-split">
 
         <div class="side-left">
@@ -197,7 +197,7 @@
     </div>
   </footer>
 
-  <!-- PENTING: pastikan cuma 1 file JS yang dipakai dan namanya benar -->
-  <script src="scriptkj.js?v=1"></script>
+  <!-- JS (anti-cache) -->
+  <script src="scriptkj.js?v=2"></script>
 </body>
 </html>
