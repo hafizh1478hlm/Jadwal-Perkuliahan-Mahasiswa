@@ -8,6 +8,32 @@
   <link rel="stylesheet" href="stylekj.css" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+
+  <!-- FIX POPUP JADWAL (ANTI BOOTSTRAP TABRAKAN) -->
+  <style>
+    /* overlay popup jadwal */
+    .jadwal-overlay{
+      position: fixed !important;
+      inset: 0 !important;
+      display: none !important;
+      justify-content: center !important;
+      align-items: center !important;
+      background: rgba(0,0,0,0.75) !important;
+      backdrop-filter: blur(5px) !important;
+      z-index: 999999 !important;
+      padding: 20px !important;
+    }
+    .jadwal-overlay.show{
+      display: flex !important;
+    }
+    .jadwal-content{
+      width: 100% !important;
+      max-width: 850px !important;
+      background: #ffffff !important;
+      border-radius: 10px !important;
+      overflow: hidden !important;
+    }
+  </style>
 </head>
 
 <body>
@@ -123,7 +149,7 @@
   </div>
 
   <!-- POPUP INPUT JADWAL (FIX: class dipisah biar gak bentrok) -->
-  <div id="jadwalInputPopup" class="modal-overlay jadwal-overlay" style="display:none;">
+  <div id="jadwalInputPopup" class="jadwal-overlay" style="display:none;">
     <div class="jadwal-content">
       <div class="modal-body-split">
 
@@ -199,5 +225,27 @@
 
   <!-- JS (anti-cache) -->
   <script src="scriptkj.js?v=2"></script>
+
+  <!-- Popup open/close helper (WAJIB, tanpa ubah logic utama) -->
+  <script>
+    // Biar popup "show" class-nya kebaca (style.display sering ketiban CSS)
+    document.addEventListener('DOMContentLoaded', () => {
+      const pop = document.getElementById('jadwalInputPopup');
+      const batal = document.getElementById('batalJadwal');
+
+      if (!pop) return;
+
+      // Tutup kalau klik tombol batal
+      if (batal) batal.addEventListener('click', () => pop.classList.remove('show'));
+
+      // Tutup kalau klik overlay luar
+      window.addEventListener('click', (e) => {
+        if (e.target === pop) pop.classList.remove('show');
+      });
+
+      // BIKIN style="display:none" di HTML gak ngunci popup (hapus biar kelas show bisa kerja)
+      pop.style.display = '';
+    });
+  </script>
 </body>
 </html>
