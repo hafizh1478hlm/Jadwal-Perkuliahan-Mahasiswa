@@ -304,3 +304,70 @@ body {
   padding: 10px;
   font-size: 13px;
 }
+
+#menuPopup,
+#userPopup {
+  display: none !important;
+  position: fixed !important;
+  background: #fff !important;
+  border-radius: 10px !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2) !important;
+  overflow: hidden !important;
+  z-index: 999999 !important;
+}
+
+#menuPopup { top: 70px !important; right: 70px !important; }
+#userPopup { top: 70px !important; right: 30px !important; }
+
+#menuPopup.open,
+#userPopup.open {
+  display: block !important;
+}
+
+#menuPopup ul,
+#userPopup ul {
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.pop-menu,
+.popup-user {
+  display: none !important;
+  position: fixed !important;
+  top: 70px !important;
+  right: 30px !important;
+
+  background: #ffffff !important;
+  border-radius: 10px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 25) !important;
+
+  z-index: 999999 !important;
+  padding: 0 !important;
+}
+
+.popup-menu.open,
+.popup-user.open {
+  display: block !important;
+}
+
+.popup-menu ul,
+.popup-user ul {
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.popup-menu li a,
+.popup-user li a {
+  display: block !important;
+  padding: 12px 20px !important;
+  color: #002147 !important;
+  text-decoration: none !important;
+}
+
+.popup-menu li a:hover,
+.popup-user li a:hover {
+  background-color: #FF762F !important;
+  color: #ffffff !important;
+}

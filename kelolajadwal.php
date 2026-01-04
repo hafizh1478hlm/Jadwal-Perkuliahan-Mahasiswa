@@ -73,7 +73,7 @@
 </header>
 
 <!-- MENU POPUP -->
-<div class="popup-menu" id="menuPopup">
+<div class="popup-menu" id="menuPopup" style="display:none">
   <ul>
     <li><a href="kelolajadwal.php">Kelola Jadwal</a></li>
     <li><a href="jadwalutama.php">Jadwal Utama</a></li>
@@ -81,7 +81,7 @@
 </div>
 
 <!-- USER POPUP -->
-<div class="popup-user" id="userPopup">
+<div class="popup-user" id="userPopup" style="display:none">
   <ul>
     <li><a href="logout.php">Keluar</a></li>
     <li><a href="#" id="btnUbahSandi">Ubah Sandi</a></li>
@@ -257,6 +257,36 @@ document.addEventListener('DOMContentLoaded', () => {
     menuPopup.style.display = 'none';
     userPopup.style.display = 'none';
   });
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const menuIcon = document.querySelector('.menu-icon');
+  const iserIcon = document.querySelector('.user-icon');
+  const menuPopup = document.getElementById('menuPopup');
+  const userPopup = document.getElementById('userPopup');
+
+  if (!menuIcon || !userIcon || !menuPopup || !userPopup) return;
+  
+  const closeAll = () => {
+    menuPopup.classList.remove('open');
+    userPopup.classList.remove('open');
+  };
+
+  menuIcon.addEventListener('click', (e) => {
+    e.stopPropagation();
+    userPopup.classList.remove('open');
+    menuPopup.classList.toggle('open');
+  });
+
+  userIcon.addEventListener('click', (e) => {
+    e.stopPropagation();
+    menuPopup.classList.remove('open');
+    userPopup.classList.toggle('open');
+  });
+
+  document.addEventListener('click', closeAll);
 });
 </script>
 
