@@ -1,15 +1,17 @@
 <?php
-include 'db.php';
+header('Content-Type: application/json; charset=utf-8');
+require_once '../koneksi.php'; // pastikan path bener
 
-$q = mysqli_query($conn, "SELECT DISTINCT matkul FROM jd_utama ORDER BY matkul");
-
-$out = [];
-while ($r = mysqli_fetch_assoc($q)) {
-  $out[] = [
-    "id" => $r["matkul"],
-    "nama" => $r["matkul"]
-  ];
+if (!isset($koneksi)) {
+  echo json_encode(["error" => "Koneksi DB tidak ditemukan. Pastikan variabel di koneksi.php adalah \$koneksi"]);
+  exit;
 }
 
-header('Content-Type: application/json');
-echo json_encode($out);
+$q = mysqli_query($koneksi, "SELECT matkul FROM mata_kuliah ORDER BY matkul ASC"); 
+
+$data = [];
+while ($r = mysqli_fetch_assoc($q)) {
+  $data[] = $r;
+}
+
+echo json_encode($data);
