@@ -1,15 +1,26 @@
 <?php
-include 'db.php';
+header('Content-Type: application/json; charset=utf-8');
 
-$q = mysqli_query($conn, "SELECT DISTINCT dosen FROM jd_utama ORDER BY dosen");
+require_once __DIR__ . '/../config/koneksi.php';
 
-$out = [];
-while ($r = mysqli_fetch_assoc($q)) {
-  $out[] = [
-    "id" => $r["dosen"],
-    "nama" => $r["dosen"]
-  ];
+if (!isset($conn)) {
+    http_response_code(500);
+    echo json_encode(["error" => "Variabel \$conn tidak ditemukan"]);
+    exit;
 }
 
-header('Content-Type: application/json');
-echo json_encode($out);
+$query = "SELECT id_dosen, nama_dosen FROM dosen ORDER BY nama_dosen ASC";
+$result = $conn->query($query);
+
+$data = [];
+
+if ($result) {
+    while ($row = $result->fetch_assoc()) {
+        $data[] = [
+            "id"   => $row["id_dosen"],
+            "nama" => $row["nama_dosen"]
+        ];
+    }
+}
+
+echo json_encode($data);
