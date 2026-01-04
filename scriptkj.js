@@ -1,38 +1,24 @@
 // ================================
-// scriptkj.js (ANTI NULL + DEBUG)
+// scriptkj.js (NO CRASH VERSION)
 // ================================
 document.addEventListener('DOMContentLoaded', () => {
   const API_BASE = './api';
 
-  // Helper ambil elemen (kalau tidak ada, kasih error jelas)
-  const $id = (id) => {
-    const el = document.getElementById(id);
-    if (!el) console.error(`[MISSING ELEMENT] id="${id}" tidak ditemukan di halaman ini.`);
-    return el;
-  };
+  const byId = (id) => document.getElementById(id);
 
-  const $q = (sel) => {
-    const el = document.querySelector(sel);
-    if (!el) console.error(`[MISSING ELEMENT] selector="${sel}" tidak ditemukan di halaman ini.`);
-    return el;
-  };
+  const calendarGrid = byId('calendarGrid') || document.querySelector('.calendar-grid');
+  const currentMonthYear = byId('currentMonthYear');
+  const prevMonth = byId('prevMonth');
+  const nextMonth = byId('nextMonth');
 
-  // Pastikan ini benar-benar script yang ke-load
-  console.log('SCRIPTKJ LOADED ✅', window.location.href);
+  const jadwalInputPopup = byId('jadwalInputPopup');
+  const kirimBtn = byId('kirimJadwal');
+  const batalBtn = byId('batalJadwal');
 
-  // Ambil element penting
-  const calendarGrid = $id('calendarGrid') || $q('.calendar-grid');
-  const currentMonthYear = $id('currentMonthYear');
-  const prevMonth = $id('prevMonth');
-  const nextMonth = $id('nextMonth');
-
-  const jadwalInputPopup = $id('jadwalInputPopup');
-  const kirimBtn = $id('kirimJadwal');
-  const batalBtn = $id('batalJadwal');
-
-  // Kalau elemen inti kalender aja nggak ada, stop biar nggak error
+  // Kalau elemen inti kalender gak ada, stop (biar gak error)
   if (!calendarGrid || !currentMonthYear || !prevMonth || !nextMonth) {
-    alert('Halaman yang kebuka tidak cocok dengan scriptkj.js (elemen kalender tidak ditemukan). Cek kamu buka file yang benar (duplikat folder?)');
+    // Jangan ganggu demo, cuma stop script.
+    console.error('Elemen kalender tidak ditemukan. Halaman/DOM tidak cocok.');
     return;
   }
 
@@ -40,51 +26,59 @@ document.addEventListener('DOMContentLoaded', () => {
   let activeDay = null;
   let activeDateISO = null;
 
-  // API helper: ambil text dulu, parse JSON, kalau gagal tampilkan raw
   async function apiJSON(url, options) {
     const res = await fetch(url, options);
     const text = await res.text();
     try {
       return JSON.parse(text);
     } catch (e) {
-      console.error('Respon Server Bukan JSON:', url, text);
-      throw new Error(`Server bukan JSON dari ${url}: ${text.substring(0, 150)}...`);
+      console.error('Respon bukan JSON:', url, text);
+      return null; // ✅ penting: jangan throw
     }
   }
 
-  // Load dropdown (id, nama)
+  // ✅ NO CRASH: kalau listEl null -> return
   async function loadDropdownsFromDB() {
     const fillDatalist = async (listId, url) => {
-      const listEl = $id(listId);
-      if (!listEl) throw new Error(`Datalist "${listId}" tidak ditemukan di HTML`);
+      const listEl = byId(listId);
+      if (!listEl) return; // ✅ stop diam-diam (tidak crash)
 
       const data = await apiJSON(url);
-      if (!Array.isArray(data)) throw new Error(`Response ${url} bukan array`);
+      if (!Array.isArray(data)) return;
 
-      listEl.innerHTML = data
-        .map((x) => `<option value="${x?.nama ?? ''}"></option>`)
-        .join('');
+      // ✅ aman: reset & append option
+      listEl.innerHTML = '';
+      for (const x of data) {
+        const opt = document.createElement('option');
+        opt.value = (x && x.nama) ? x.nama : '';
+        listEl.appendChild(opt);
+      }
     };
 
-    await Promise.all([
-      fillDatalist('matkulList', `${API_BASE}/mata_kuliah_list.php`),
-      fillDatalist('dosenList', `${API_BASE}/dosen_list.php`),
-      fillDatalist('ruanganList', `${API_BASE}/ruangan_list.php`),
-    ]);
+    await fillDatalist('matkulList', `${API_BASE}/mata_kuliah_list.php`);
+    await fillDatalist('dosenList', `${API_BASE}/dosen_list.php`);
+    await fillDatalist('ruanganList', `${API_BASE}/ruangan_list.php`);
   }
 
   function resetPopupForm() {
-    ['matkulInput', 'dosenInput', 'ruanganInput', 'jamMulaiInput', 'jamSelesaiInput', 'manualTimeInput', 'catatanInput']
-      .forEach((id) => {
-        const el = $id(id);
-        if (el) el.value = '';
-      });
-
+    const ids = [
+      'matkulInput',
+      'dosenInput',
+      'ruanganInput',
+      'jamMulaiInput',
+      'jamSelesaiInput',
+      'manualTimeInput',
+      'catatanInput',
+    ];
+    for (const id of ids) {
+      const el = byId(id);
+      if (el) el.value = '';
+    }
     if (activeDay) activeDay.classList.remove('active');
   }
 
   function renderCalendar(date) {
-    // kalender header hari
+    // Header hari
     calendarGrid.innerHTML = `
       <div class="day-name">SUN</div><div class="day-name">MON</div>
       <div class="day-name">TUE</div><div class="day-name">WED</div>
@@ -111,26 +105,17 @@ document.addEventListener('DOMContentLoaded', () => {
       d.textContent = day;
 
       d.onclick = async () => {
-        if (!jadwalInputPopup) {
-          alert('Popup jadwalInputPopup tidak ditemukan di HTML.');
-          return;
-        }
-
         if (activeDay) activeDay.classList.remove('active');
         d.classList.add('active');
         activeDay = d;
 
         activeDateISO = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 
-        try {
-          await loadDropdownsFromDB();
-        } catch (e) {
-          alert('Gagal load dropdown: ' + e.message);
-          console.error(e);
-          return;
-        }
+        // ✅ tampilkan popup dulu (biar elemen di dalamnya pasti ada)
+        if (jadwalInputPopup) jadwalInputPopup.style.display = 'flex';
 
-        jadwalInputPopup.style.display = 'flex';
+        // ✅ load dropdown TANPA CRASH
+        await loadDropdownsFromDB();
       };
 
       calendarGrid.appendChild(d);
@@ -158,14 +143,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // Tombol kirim
   if (kirimBtn) {
     kirimBtn.onclick = async () => {
-      const matkul = ($id('matkulInput')?.value || '').trim();
-      const dosen = ($id('dosenInput')?.value || '').trim() || '-';
-      const ruangan = ($id('ruanganInput')?.value || '').trim() || '-';
-      const catatan = ($id('catatanInput')?.value || '').trim() || '-';
+      const matkul = (byId('matkulInput')?.value || '').trim();
+      const dosen = (byId('dosenInput')?.value || '').trim() || '-';
+      const ruangan = (byId('ruanganInput')?.value || '').trim() || '-';
+      const catatan = (byId('catatanInput')?.value || '').trim() || '-';
 
-      const mulaiPicker = ($id('jamMulaiInput')?.value || '').trim();
-      const selesaiPicker = ($id('jamSelesaiInput')?.value || '').trim();
-      const manual = ($id('manualTimeInput')?.value || '').trim();
+      const mulaiPicker = (byId('jamMulaiInput')?.value || '').trim();
+      const selesaiPicker = (byId('jamSelesaiInput')?.value || '').trim();
+      const manual = (byId('manualTimeInput')?.value || '').trim();
 
       let jam_mulai = mulaiPicker;
       let jam_selesai = selesaiPicker;
@@ -199,18 +184,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         const raw = await res.text();
-        console.log('Server Response:', raw);
+        let result = null;
+        try { result = JSON.parse(raw); } catch (_) {}
 
-        const result = JSON.parse(raw);
-        if (result.status === 'success' || result.status === 'ok') {
+        if (result && (result.status === 'success' || result.status === 'ok')) {
           alert('Mantap! Jadwal tersimpan.');
           location.reload();
         } else {
-          alert('Gagal: ' + (result.message || 'Error tidak diketahui'));
+          alert('Gagal: ' + (result?.message || raw || 'Error tidak diketahui'));
         }
       } catch (e) {
         console.error(e);
-        alert('Gagal memproses data. Cek Console (F12).');
+        alert('Gagal memproses data.');
       }
     };
   }
