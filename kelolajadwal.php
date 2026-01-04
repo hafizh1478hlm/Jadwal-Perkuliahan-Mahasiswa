@@ -198,6 +198,6 @@
   </footer>
 
   <!-- PENTING: pastikan cuma 1 file JS yang dipakai dan namanya benar -->
-  <script src="scriptkj.js"></script>
+  <script src="scriptkj.js?v=1"></script>
 </body>
 </html>
