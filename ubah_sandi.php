@@ -26,6 +26,7 @@ if (!password_verify($password_lama, $data['password'])) {
 $hash = password_hash($password_baru, PASSWORD_DEFAULT);
 mysqli_query($conn, "UPDATE users SET password='$hash' WHERE id_user='$id'");
 
-header("Location: dashboard.php?password=success");
+// Mengarahkan user kembali ke halaman tempat dia mengirim form
+header("Location: " . $_SERVER['HTTP_REFERER']);
 exit;
 ?>
