@@ -83,6 +83,15 @@ body > header.navbar {
   gap: -5px;
 }
 
+/* Warna saat pilihan dropdown disorot pakai panah keyboard */
+.suggestion-item.active {
+    background-color: #ededed !important;
+    color: rgb(0, 0, 0) !important;
+}
+.suggestion-item.active .text-muted {
+    color: #000000 !important;
+}
+
 #suggestions {
   position: absolute;
   top: 35px;
@@ -111,12 +120,12 @@ body > header.navbar {
 }
 
 #suggestions li:hover:not(:last-child) {
-  background-color: #c6c6c6;
+  background-color: #ededed;
   color: rgb(0, 0, 0);
 }
 
 #suggestions li.active {
-  background-color: #c6c6c6;
+  background-color: #ededed;
   color: rgb(0, 0, 0);
 }
 
@@ -483,6 +492,10 @@ h1, p {
 .notes-row {
     display: flex;
     border-bottom: 1px solid var(--border-color);
+    align-items: stretch;
+    min-height: 40px;
+    border-bottom: 1px solid var(--border-color);
+    height: auto;
 }
 
 .notes-row.header-row {
@@ -494,45 +507,67 @@ h1, p {
     flex: 1;
     padding: 12px 15px;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    align-items: flex-start;
+    justify-content: flex-start;
     border-right: 1px solid var(--border-color);
     word-wrap: break-word;
     white-space: pre-wrap;
     overflow-wrap: break-word;
-    max-height: 100px;
-}
-
-.notes-col.catatan {
-    word-wrap: break-word;
-    white-space: pre-wrap;
-    overflow-wrap: break-word;
-    max-width: 177.5px;  /* kamu bisa atur ukurannya */
+    height: auto;
 }
 
 .notes-col.catatan-col {
+    align-items: flex-start !important;   /* jangan center */
+    justify-content: flex-start !important;
+    height: auto;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    max-width: 177.5px;  /* kamu bisa atur ukurannya */
     justify-content: flex-start;
     text-align: left;
     align-items: flex-start;
     line-height: 1.4;
 }
 
+
+.notes-col.catatan-col.empty {
+    justify-content: center;
+    align-items: center;
+    color: #999;
+    font-style: italic;
+    text-align: center;
+}
+
 .notes-col:last-child {
     border-right: none;
 }
 
-.notes-col.delete-btn {
-  color: red;
-  font-size: 18px;
-  transition: 0.2s;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transform: none; /* pastiin gak ada rotasi */
+
+.notes-col.action-col {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+    margin-left: 0 !important;
+    width: 60px;           /* IMPORTANT */
+    flex-shrink: 0;
 }
-.notes-col.delete-btn:hover {
-  transform: scale(1.1);
+
+
+.notes-col.action-col button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
 }
+
+.notes-col.action-col i {
+    font-size: 18px;
+}
+
+
 
 
 /* --- Overlay Luar --- */
@@ -789,11 +824,13 @@ h1, p {
   background-color: #FF762F;
   font-weight: bold;
   font-size: 13px;
+  padding: 0px !important;
 }
 
 .footer-bottom p {
   color: #ffffff;
   text-align: center;
+  font-size: smaller;
 }
 
 

@@ -10,14 +10,16 @@ if ($keyword === '') {
 }
 
 // prepared statement untuk mencegah SQL injection
-$sql = "SELECT id_jadwal, matkul, dosen, hari, jam_mulai, jam_selesai, ruangan
-        FROM jd_utama
-        WHERE matkul LIKE ? OR dosen LIKE ?
-        LIMIT 50";
+// Tambahkan pencarian ke kolom hari atau ruangan jika perlu
+$sql = "SELECT matkul, dosen, hari 
+        FROM jd_utama 
+        WHERE matkul LIKE ? OR dosen LIKE ? OR hari LIKE ?
+        LIMIT 10"; // Limit 10 saja supaya dropdown tidak kepanjangan
 
 $stmt = mysqli_prepare($conn, $sql);
 $like = "%{$keyword}%";
-mysqli_stmt_bind_param($stmt, "ss", $like, $like);
+// Tambahkan satu "s" lagi untuk bind_param hari
+mysqli_stmt_bind_param($stmt, "sss", $like, $like, $like);
 mysqli_stmt_execute($stmt);
 $res = mysqli_stmt_get_result($stmt);
 

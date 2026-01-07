@@ -121,66 +121,66 @@
     </div>
 
     <!-- POPUP INPUT JADWAL -->
-<div id="jadwalInputPopup" class="modal-overlay">
-    <div class="modal-content">
-        <div class="modal-body-split">
-            
-            <div class="side-left">
-                <div class="modal-header-simple">
-                    <h3>Kelola Jadwal</h3>
-                    <p class="subtitle">Input detail perkuliahanmu disini.</p>
-                </div>
+    <div id="jadwalInputPopup" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-body-split">
 
-                <div class="input-group">
-                    <label>Mata Kuliah</label>
-                    <input type="text" id="matkulInput" list="matkulList" placeholder="Pilih Matkul">
-                    <datalist id="matkulList"></datalist>
-                </div>
-
-                <div class="input-group">
-                    <label>Dosen</label>
-                    <input type="text" id="dosenInput" list="dosenList" placeholder="Nama Dosen">
-                    <datalist id="dosenList"></datalist>
-                </div>
-
-                <div class="input-group">
-                    <label>Ruangan</label>
-                    <input type="text" id="ruanganInput" list="ruanganList" placeholder="Contoh: TA 10.4">
-                    <datalist id="ruanganList"></datalist>
-                </div>
-            </div>
-
-            <div class="side-right">
-                <div class="input-group">
-                    <label>Waktu Perkuliahan</label>
-                    <div class="waktu-row">
-                        <div class="waktu-box">
-                            <small>MULAI</small>
-                            <input type="time" id="jamMulaiInput">
-                        </div>
-                        <div class="waktu-box">
-                            <small>SELESAI</small>
-                            <input type="time" id="jamSelesaiInput">
-                        </div>
+                <div class="side-left">
+                    <div class="modal-header-simple">
+                        <h3>Kelola Jadwal</h3>
+                        <p class="subtitle">Input detail perkuliahanmu disini.</p>
                     </div>
-                    <div class="divider-text">ATAU MANUAL</div>
-                    <input type="text" id="manualTimeInput" placeholder="Contoh: 07:30 - 09:00">
+
+                    <div class="input-group">
+                        <label>Mata Kuliah</label>
+                        <input type="text" id="matkulInput" list="matkulList" placeholder="Pilih Matkul">
+                        <datalist id="matkulList"></datalist>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Dosen</label>
+                        <input type="text" id="dosenInput" list="dosenList" placeholder="Nama Dosen">
+                        <datalist id="dosenList"></datalist>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Ruangan</label>
+                        <input type="text" id="ruanganInput" list="ruanganList" placeholder="Contoh: TA 10.4">
+                        <datalist id="ruanganList"></datalist>
+                    </div>
                 </div>
 
-                <div class="input-group">
-                    <label>Catatan Tambahan</label>
-                    <input type="text" id="catatanInput" placeholder="Kuis, Tugas, dll...">
+                <div class="side-right">
+                    <div class="input-group">
+                        <label>Waktu Perkuliahan</label>
+                        <div class="waktu-row">
+                            <div class="waktu-box">
+                                <small>MULAI</small>
+                                <input type="time" id="jamMulaiInput">
+                            </div>
+                            <div class="waktu-box">
+                                <small>SELESAI</small>
+                                <input type="time" id="jamSelesaiInput">
+                            </div>
+                        </div>
+                        <div class="divider-text">ATAU MANUAL</div>
+                        <input type="text" id="manualTimeInput" placeholder="Contoh: 07:30 - 09:00">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Catatan Tambahan</label>
+                        <input type="text" id="catatanInput" placeholder="Kuis, Tugas, dll...">
+                    </div>
+
+                    <div class="modal-footer">
+                        <button id="batalJadwal" class="btn-secondary">BATAL</button>
+                        <button id="kirimJadwal" class="btn-primary">KIRIM</button>
+                    </div>
                 </div>
 
-                <div class="modal-footer">
-                    <button id="batalJadwal" class="btn-secondary">BATAL</button>
-                    <button id="kirimJadwal" class="btn-primary">KIRIM</button>
-                </div>
             </div>
-
         </div>
     </div>
-</div>
 
     <!-- Footer -->
     <footer class="footer">
@@ -199,4 +199,3 @@
 
 
 </html>
-

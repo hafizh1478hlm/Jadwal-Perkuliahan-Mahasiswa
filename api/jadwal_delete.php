@@ -12,4 +12,4 @@ if ($id <= 0) {
 $stmt = $pdo->prepare("DELETE FROM jadwal_kuliah WHERE id = ?");
 $stmt->execute([$id]);
 
-echo json_encode(["ok" => true]);
+echo json_encode(["status" => "success", "message" => "Data berhasil dihapus"]);

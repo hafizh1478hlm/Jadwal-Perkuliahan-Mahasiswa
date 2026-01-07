@@ -31,7 +31,7 @@ body > header.navbar {
   width: 100%;
   top: 0;
   left: 0;
-  z-index: 100000; /* naikin z-index-nya */
+  z-index: 1000; /* naikin z-index-nya */
 }
 
 .nav-left {
@@ -71,41 +71,66 @@ body > header.navbar {
   position: relative;
 }
 
+/* --- PERBAIKAN SEARCH DROPDOWN AGAR SAMA DENGAN KELOLA JADWAL --- */
 #suggestions {
-  position: absolute;
-  top: 35px;
-  left: 0;
-  width: 100%;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: none;
-  z-index: 1000;
+    position: absolute;
+    top: 35px;
+    left: 0;
+    width: 100%;
+    background: white;
+    border-radius: 10px; /* Samakan dengan KJ */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: none;
+    z-index: 99999; 
+    border: none; /* Biar list-group Bootstrap yang handle border */
+    overflow: hidden;
 }
 
-#suggestions li {
-  padding: 8px 12px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 14px;
-  color: #333;
+/* Item List - Dibuat Identik dengan KJ */
+.suggestion-item {
+    padding: 8px 12px !important;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid #eee !important;
+    text-align: left; /* Paksa rata kiri */
 }
 
-#suggestions li:last-child {
-  border-bottom: none;
+.suggestion-item:last-child {
+    border-bottom: none !important;
 }
 
-#suggestions li:hover:not(:last-child) {
-  background-color: #c6c6c6;
-  color: rgb(0, 0, 0);
+/* Judul Matkul di Dropdown */
+.suggestion-item strong {
+    font-size: 13px; /* Ukuran pas, tidak raksasa */
+    color: #333;
+    display: block;
+    line-height: 1.2;
 }
 
-#suggestions li.active {
-  background-color: #c6c6c6;
-  color: rgb(0, 0, 0);
+/* Teks Dosen & Hari */
+.suggestion-item small {
+    display: block;
+    font-size: 11px;
+    color: #000000 !important;
+}
+
+/* --- EFEK BORDER BIRU --- */
+/* Saat menggunakan Panah Keyboard (Active) atau Hover */
+.suggestion-item.active, 
+.suggestion-item:hover {
+    background-color: #ededed !important; /* Abu-abu muda */
+    outline: 1px solid #0d6efd; /* Border biru tipis di sekeliling */
+    outline-offset: -1px;
+    color: #000 !important;
+}
+
+/* Pastikan teks kecil tidak hilang saat active */
+.suggestion-item.active strong,
+.suggestion-item:hover strong {
+    color: #000 !important;
 }
 
 .menu-icon {
@@ -197,7 +222,7 @@ body > header.navbar {
 }
 
 /* OVERLAY POPUP UBAH SANDI */
-.modal {
+.modal-password {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.6); /* gelap */
@@ -236,7 +261,7 @@ body > header.navbar {
   margin-top: 4px;
 }
 
-.modal-content {
+.modal-password-content {
   background: #fdfdf8;
   padding: 28px 26px 30px;
   width: 100%;
@@ -248,13 +273,13 @@ body > header.navbar {
   font-family: 'Poppins', sans-serif;
 }
 
-.modal-content form {
+.modal-password-content form {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.modal-content input {
+.modal-password-content input {
   width: 100%;
   padding: 14px 16px;
   border-radius: 12px;
@@ -263,13 +288,13 @@ body > header.navbar {
   background: #fff;
 }
 
-.modal-content input:focus {
+.modal-password-content input:focus {
   outline: none;
   border-color: #FF762F;
   box-shadow: 0 0 0 3px rgba(255,179,71,.25);
 }
 
-.modal-content button {
+.modal-password-content button {
   margin-top: 10px;
   padding: 14px;
   border-radius: 14px;
@@ -281,7 +306,7 @@ body > header.navbar {
   cursor: pointer;
 }
 
-.modal-content button:hover {
+.modal-password-content button:hover {
   background: #ffb414;
   box-shadow: 0 8px 20px rgba(255,179,71,.4);
 }
@@ -302,14 +327,16 @@ body > header.navbar {
 
 
 
+/* --- 3. Container Konten --- */
 .container {
-    max-width: 800px;
-    margin: 135px 40px 70px 40px; /* Center the container */
-    background: white;
-    padding: 40px 12px 60px 12px;
+    padding: 39px 13px 50px 13px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 50px;
+    /* Menghilangkan margin-top bawaan bootstrap agar dikontrol oleh padding-top body */
+    margin-top: 135px !important; 
 }
+
 
 img {
     width: 150px;
@@ -371,6 +398,27 @@ h2 {
     background-color: #eaf2f8;
 }
 
+/* Warna kuning untuk baris yang dicari */
+.highlight-yellow {
+    background-color: #fff3cd !important; 
+    border: 2px solid #ffecb5;
+    transition: background-color 0.5s ease;
+}
+
+/* Opsional: Tambahkan sedikit animasi kedip agar user makin sadar */
+@keyframes highlight-fade {
+    from { background-color: #ffe082; }
+    to { background-color: #fff3cd; }
+}
+.highlight-yellow td {
+    animation: highlight-fade 1s infinite alternate;
+}
+
+.list-group-item.active {
+    background-color: #007bff !important;
+    color: white !important;
+}
+
 .footer {
   background-color: #0E2A66;
   font-family: Arial, sans-serif;
@@ -392,9 +440,11 @@ h2 {
   background-color: #FF762F;
   font-weight: bold;
   font-size: 13px;
+  padding: 0px !important;
 }
 
 .footer-bottom p {
   color: #ffffff;
   text-align: center;
+  font-size: smaller;
 }
