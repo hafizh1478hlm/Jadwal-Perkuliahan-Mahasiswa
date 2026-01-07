@@ -1,9 +1,17 @@
-<?php 
-include 'koneksi.php'; 
+<?php
+ob_start(); 
+session_start();
+include 'koneksi.php'; // Pastikan koneksi aman
 
-// Ambil keyword dari URL (hasil klik dropdown search)
-$keyword = isset($_GET['search']) ? $_GET['search'] : '';
+if (!isset($_SESSION['nama'])) {
+    header("Location: login.php?pesan=wajib_login");
+    exit();
+}
+
+// INI KUNCINYA: Menangkap kata dari search bar
+$keyword = isset($_GET['search']) ? $_GET['search'] : ''; 
 ?>
+
 <!DOCTYPE html>
 <html lang="id">
 

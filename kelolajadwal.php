@@ -1,3 +1,16 @@
+<?php
+session_start();
+
+/**
+ * Keamanan: Cek apakah session 'nama' atau 'user_id' sudah ada.
+ * Jika tidak ada, artinya user belum login, maka lempar balik ke login.php.
+ */
+if (!isset($_SESSION['nama'])) {
+    header("Location: login.php?pesan=wajib_login");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 

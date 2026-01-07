@@ -190,11 +190,17 @@ if (isset($_POST['login'])) {
             <p>Masukkan akun untuk melihat jadwal kamu.</p>
         </div>
 
-        <?php if ($error != ""): ?>
-            <div class="alert-error">
-                <i class="fas fa-circle-exclamation me-2"></i> <?= $error ?>
-            </div>
-        <?php endif; ?>
+        <?php if (isset($_GET['pesan']) && $_GET['pesan'] == "wajib_login"): ?>
+        <div class="alert-error" style="background: #fffbeb; color: #92400e; border: 1px solid #fef3c7;">
+            <i class="fas fa-lock me-2"></i> Akses ditolak. Silahkan login.
+        </div>
+    <?php endif; ?>
+
+    <?php if ($error != ""): ?>
+        <div class="alert-error">
+            <i class="fas fa-circle-exclamation me-2"></i> <?= $error ?>
+        </div>
+    <?php endif; ?>
 
         <form method="POST" action="">
             <div class="mb-3">
@@ -233,6 +239,15 @@ if (isset($_POST['login'])) {
                 setTimeout(() => alert.remove(), 500);
             }, 3000);
         }
+
+        const wajibLoginAlert = document.querySelector('.alert-error');
+if (wajibLoginAlert) {
+    setTimeout(() => {
+        wajibLoginAlert.style.transition = "0.5s";
+        wajibLoginAlert.style.opacity = "0";
+        setTimeout(() => wajibLoginAlert.remove(), 500);
+    }, 3000); // Hilang setelah 4 detik
+}
     </script>
 </body>
 </html>
