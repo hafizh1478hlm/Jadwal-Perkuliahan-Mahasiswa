@@ -170,7 +170,7 @@ $nama_display = $is_logged_in ? $_SESSION['nama'] : "Mahasiswa";
 
                 <div class="col-md-3">
                     <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.057791480036!2d104.0458631!3d1.1187455!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31d98921856dd359%3A0x14a927dfe31ccfe!2sPoliteknik%20Negeri%20Batam!5e0!3m2!1sid!2sid!4v1715600000000!5m2!1sid!2sid"
+                        src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15956.231086402766!2d104.045863!3d1.118746!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31d98921856ddfab%3A0xf9d9fc65ca00c9d!2sPoliteknik%20Negeri%20Batam!5e0!3m2!1sid!2sid!4v1767807371867!5m2!1sid!2sid"
                         width="100%" 
                         height="200" 
                         style="border:0;" 
